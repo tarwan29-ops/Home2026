@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Try Out TKA 2 - Biologi XII</title>
+    <style>
+        :root {
+            --primary-color: #1E3A8A;   /* Biru Tua */
+            --accent-color: #10B981;    /* Hijau */
+            --bg-color: #F3F4F6;        /* Abu-abu Muda */
+            --text-color: #1F2937;
+            --card-bg: #FFFFFF;
+            --border-color: #E5E7EB;
+            --danger-color: #EF4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .exam-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .timer-box {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .teacher-info {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .question-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .kd-badge {
+            display: inline-block;
+            background-color: #E0E7FF;
+            color: var(--primary-color);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .option-label:hover {
+            background-color: #F9FAFB;
+            border-color: #D1D5DB;
+        }
+
+        .option-label input {
+            margin-top: 4px;
+        }
+
+        /* Tabel Benar Salah */
+        .bs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        .bs-table th, .bs-table td {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        .bs-table th {
+            background-color: #F3F4F6;
+            font-weight: 600;
+        }
+
+        .bs-table td.text-center, .bs-table th.text-center {
+            text-align: center;
+            width: 80px;
+        }
+
+        /* SVG Illustration Container */
+        .svg-container {
+            margin: 15px 0;
+            text-align: center;
+            background: #FAFAFA;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px dashed var(--border-color);
+        }
+
+        /* Data Tabel Tambahan Soal */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0 15px 0;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #D1D5DB;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        .data-table th {
+            background-color: #E5E7EB;
+        }
+
+        .submit-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .btn-submit {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-submit:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+        }
+
+        /* Dashboard Hasil Skor */
+        #result-dashboard {
+            display: none;
+            background: white;
+            border: 2px solid var(--accent-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        #result-dashboard h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin: 15px 0;
+        }
+
+        .feedback-text {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #4B5563;
+        }
+
+        /* Kotak Pembahasan */
+        .discussion-box {
+            display: none;
+            background-color: #ECFDF5;
+            border-left: 4px solid var(--accent-color);
+            padding: 12px 15px;
+            margin-top: 15px;
+            border-radius: 0 6px 6px 0;
+            font-size: 0.95rem;
+            color: #065F46;
+        }
+
+        .discussion-box.show {
+            display: block;
+        }
+
+        .correct-answer-note {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #047857;
+        }
+
+        @media(max-width: 600px) {
+            body { padding: 10px; }
+            .header-top { flex-direction: column; align-items: flex-start; }
+            .timer-box { align-self: stretch; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-top">
+            <div class="exam-title">Try Out TKA 2 - Biologi (Kelas XII)</div>
+            <div class="timer-box" id="timer">Waktu: <span id="time-left">45:00</span></div>
+        </div>
+        <div class="teacher-info">
+            <span>Pembuat: <strong>Tarwan, S.Pd.</strong></span>
+            <span>Instansi: <strong>SMAN 1 Kedungreja</strong></span>
+        </div>
+    </header>
+
+    <div id="result-dashboard">
+        <h2>Hasil Evaluasi Ujian</h2>
+        <div class="score-display" id="final-score">0</div>
+        <p class="feedback-text" id="feedback-message">-</p>
+        <button class="btn-submit" onclick="location.reload();" style="background-color: var(--primary-color);">Ulangi Ujian</button>
+    </div>
+
+    <form id="quiz-form" onsubmit="evaluateQuiz(event)">
+
+        <!-- SOAL 1 -->
+        <div class="question-card" data-q="1">
+            <span class="kd-badge">KD: Evolusi & Keanekaragaman Hayati</span>
+            <div class="question-text">1. Populasi burung Jalak Bali (<i>Leucopsar rothschildi</i>) di habitat aslinya sempat mengalami penurunan drastis hingga mendekati kepunahan. Selain penurunan akibat perburuan liar, faktor biologis internal yang paling berpengaruh terhadap lambatnya pemulihan populasi spesies endemik tersebut adalah...</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q1" value="A"> A. Keragaman genetik yang sangat tinggi sehingga rentan terhadap penyakit</label>
+                <label class="option-label"><input type="radio" name="q1" value="B"> B. Tingkat reproduksi yang rendah dan sifatnya yang spesifik terhadap habitat tertentu</label>
+                <label class="option-label"><input type="radio" name="q1" value="C"> C. Kemampuan adaptasi yang sangat tinggi terhadap perubahan iklim global</label>
+                <label class="option-label"><input type="radio" name="q1" value="D"> D. Luasnya wilayah jelajah yang melampaui batas Kawasan Taman Nasional</label>
+                <label class="option-label"><input type="radio" name="q1" value="E"> E. Tingkat kompetisi intraspesifik yang rendah dalam memperebutkan makanan</label>
+            </div>
+            <div class="discussion-box" id="disc-1">
+                <div class="correct-answer-note">Kunci Jawaban: B</div>
+                <div>Pembahasan: Spesies endemik dengan ukuran populasi kecil dan laju reproduksi rendah serta spesifisitas habitat yang tinggi sangat rentan terhadap kepunahan dan lambat pulih secara alami.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 2 -->
+        <div class="question-card" data-q="2">
+            <span class="kd-badge">KD: Struktur & Klasifikasi Bakteri</span>
+            <div class="question-text">2. Seorang peneliti melakukan pengamatan terhadap dua jenis bakteri, yaitu <i>Staphylococcus aureus</i> dan <i>Escherichia coli</i> dalam pewarnaan Gram serta strukturnya. Manakah pernyataan-pernyataan berikut yang benar mengenai perbedaan struktur dan peranan kedua kelompok bakteri tersebut? (Pilih satu jawaban paling tepat)</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q2" value="A"> A. Staphylococcus aureus termasuk bakteri Gram positif yang memiliki lapisan peptidoglikan tebal, sehingga lebih mudah didehidrasi oleh alkohol saat pewarnaan dan mempertahankan warna ungu.</label>
+                <label class="option-label"><input type="radio" name="q2" value="B"> B. Escherichia coli memiliki membran luar (outer membrane) yang mengandung lipopolisakarida, yang berfungsi sebagai barier tambahan terhadap masuknya antibiotik dan zat kimia tertentu.</label>
+                <label class="option-label"><input type="radio" name="q2" value="C"> C. Perbedaan warna pada pewarnaan Gram terjadi karena Escherichia coli memiliki lapisan peptidoglikan yang jauh lebih tipis dan terletak di antara membran plasma dan membran luar.</label>
+                <label class="option-label"><input type="radio" name="q2" value="D"> D. Lactobacillus casei merupakan contoh bakteri Gram positif yang berperan menguntungkan dalam industri pangan melalui proses fermentasi asam laktat.</label>
+                <label class="option-label"><input type="radio" name="q2" value="E"> E. Staphylococcus aureus dan Escherichia coli keduanya diklasifikasikan sebagai bakteri fotoautotrof karena mampu menghasilkan toksin yang berbahaya bagi sistem pencernaan manusia.</label>
+            </div>
+            <div class="discussion-box" id="disc-2">
+                <div class="correct-answer-note">Kunci Jawaban: B</div>
+                <div>Pembahasan: Escherichia coli adalah bakteri Gram negatif yang memiliki membran luar mengandung lipopolisakarida yang bertindak sebagai barier pelindung terhadap antibiotik tertentu.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 3 -->
+        <div class="question-card" data-q="3">
+            <span class="kd-badge">KD: Ekologi & Interaksi Antarorganisme</span>
+            <div class="question-text">3. Di sebuah kawasan perkebunan kelapa sawit, terjadi ledakan populasi hama tikus. Pemilik melepaskan burung hantu (<i>Tyto alba</i>). Setelah setahun, populasi burung pemakan serangga kecil ikut menurun drastis karena perebutan tempat bersarang pada pohon peneduh tertentu dengan burung hantu. Berdasarkan ilustrasi di atas, bentuk interaksi antara burung hantu dan burung pemakan serangga kecil serta dampaknya adalah...</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q3" value="A"> A. Predasi, yang menyebabkan kepunahan lokal pada burung pemakan serangga karena kalah berburu makanan.</label>
+                <label class="option-label"><input type="radio" name="q3" value="B"> B. Kompetisi interspesifik, di mana perebutan ruang (tempat bersarang) menekan populasi salah satu spesies.</label>
+                <label class="option-label"><input type="radio" name="q3" value="C"> C. Amensalisme, karena keberadaan burung hantu secara tidak sengaja merugikan burung kecil tanpa burung hantu mendapat keuntungan dari burung kecil tersebut.</label>
+                <label class="option-label"><input type="radio" name="q3" value="D"> D. Simbiosis parasitisme, karena burung hantu mengambil keuntungan dari pohon peneduh yang seharusnya menjadi hak burung kecil.</label>
+                <label class="option-label"><input type="radio" name="q3" value="E"> E. Kompetisi intraspesifik, karena terjadi perebutan wilayah perburuan ekosistem antara sesama burung di perkebunan.</label>
+            </div>
+            <div class="discussion-box" id="disc-3">
+                <div class="correct-answer-note">Kunci Jawaban: B</div>
+                <div>Pembahasan: Interaksi antara dua spesies berbeda (burung hantu vs burung pemakan serangga kecil) yang memperebutkan sumber daya yang sama (tempat bersarang/ruang) disebut kompetisi interspesifik.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 4 (Tabel Benar/Salah) -->
+        <div class="question-card" data-q="4">
+            <span class="kd-badge">KD: Metabolisme & Respirasi Sel</span>
+            <div class="question-text">4. Tentukan kategori Benar atau Salah untuk setiap pernyataan berikut mengenai respirasi aerob dan fermentasi:</div>
+            <table class="bs-table">
+                <thead>
+                    <tr>
+                        <th>Pernyataan</th>
+                        <th class="text-center">Benar</th>
+                        <th class="text-center">Salah</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>A. Pada respirasi aerob dan fermentasi, glikolisis menghasilkan piruvat sebagai produk antara.</td>
+                        <td class="text-center"><input type="radio" name="q4_a" value="B"></td>
+                        <td class="text-center"><input type="radio" name="q4_a" value="S"></td>
+                    </tr>
+                    <tr>
+                        <td>B. Pada peristiwa fermentasi, piruvat diubah menjadi laktat untuk meregenerasi NAD⁺.</td>
+                        <td class="text-center"><input type="radio" name="q4_b" value="B"></td>
+                        <td class="text-center"><input type="radio" name="q4_b" value="S"></td>
+                    </tr>
+                    <tr>
+                        <td>C. Pada respirasi aerob, siklus Krebs dan rantai transpor elektron berlangsung secara optimal.</td>
+                        <td class="text-center"><input type="radio" name="q4_c" value="B"></td>
+                        <td class="text-center"><input type="radio" name="q4_c" value="S"></td>
+                    </tr>
+                    <tr>
+                        <td>D. Pada respirasi aerob, produksi ATP per molekul glukosa relatif sedikit karena hanya mengandalkan hasil siklus Krebs.</td>
+                        <td class="text-center"><input type="radio" name="q4_d" value="B"></td>
+                        <td class="text-center"><input type="radio" name="q4_d" value="S"></td>
+                    </tr>
+                    <tr>
+                        <td>E. Pada fermentasi, oksigen berperan sebagai akseptor elektron terakhir.</td>
+                        <td class="text-center"><input type="radio" name="q4_e" value="B"></td>
+                        <td class="text-center"><input type="radio" name="q4_e" value="S"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="discussion-box" id="disc-4">
+                <div class="correct-answer-note">Kunci Jawaban: A (Benar), B (Benar), C (Benar), D (Salah), E (Salah)</div>
+                <div>Pembahasan: Respirasi aerob menghasilkan ATP sangat banyak melalui fosforilasi oksidatif (rantai transpor elektron), bukan hanya siklus Krebs. Fermentasi tidak menggunakan oksigen sebagai akseptor elektron terakhir.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 5 -->
+        <div class="question-card" data-q="5">
+            <span class="kd-badge">KD: Enzim & Faktor Lingkungan</span>
+            <div class="question-text">5. Perhatikan data percobaan kerja enzim katalase pada ekstrak hati dengan variasi pH berikut:</div>
+            <table class="data-table">
+                <tr><th>Perlakuan</th><th>Kondisi pH</th><th>Volume O₂ (ml)</th></tr>
+                <tr><td>I</td><td>pH = 4</td><td>7</td></tr>
+                <tr><td>II</td><td>pH = 6</td><td>19</td></tr>
+                <tr><td>III</td><td>pH = 7</td><td>28</td></tr>
+                <tr><td>IV</td><td>pH = 8</td><td>23</td></tr>
+                <tr><td>V</td><td>pH = 10</td><td>9</td></tr>
+            </table>
+            <div class="question-text">Berdasarkan data percobaan dan karakteristik kerja enzim, evaluasi yang paling tepat terhadap pernyataan siswa ("Semakin basa lingkungan, semakin tinggi aktivitas katalase...") adalah ....</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q5" value="A"> A. Pernyataan benar karena peningkatan pH menyebabkan energi kinetik molekul meningkat sehingga tumbukan semakin sering.</label>
+                <label class="option-label"><input type="radio" name="q5" value="B"> B. Pernyataan benar karena katalase merupakan protein yang aktivitasnya selalu meningkat pada lingkungan yang semakin basa.</label>
+                <label class="option-label"><input type="radio" name="q5" value="C"> C. Pernyataan kurang tepat karena katalase memiliki rentang pH optimum; berdasarkan data, aktivitas tertinggi terjadi pada pH 7, sedangkan kondisi terlalu asam atau basa menurunkan aktivitas enzim.</label>
+                <label class="option-label"><input type="radio" name="q5" value="D"> D. Pernyataan kurang tepat karena pH tidak memengaruhi struktur enzim, tetapi hanya memengaruhi jumlah molekul H₂O₂.</label>
+                <label class="option-label"><input type="radio" name="q5" value="E"> E. Pernyataan kurang tepat karena aktivitas katalase hanya ditentukan oleh konsentrasi enzim.</label>
+            </div>
+            <div class="discussion-box" id="disc-5">
+                <div class="correct-answer-note">Kunci Jawaban: C</div>
+                <div>Pembahasan: Enzim memiliki pH optimum (pada data ini pH 7 menghasilkan volume O₂ tertinggi 28 ml). pH ekstrem baik asam maupun basa akan menurunkan aktivitas enzim.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 6 (Tabel Benar/Salah + SVG) -->
+        <div class="question-card" data-q="6">
+            <span class="kd-badge">KD: Fotosintesis & Reaksi Terang</span>
+            <div class="question-text">6. Perhatikan skema percobaan fotosintesis tanaman air (<i>Hydrilla verticillata</i>) di bawah ini:</div>
+            <div class="svg-container">
+                <svg width="220" height="150" viewBox="0 0 220 150">
+                    <!-- Beaker / Gelas Kimia -->
+                    <rect x="60" y="40" width="100" height="90" fill="#E0F2FE" stroke="#0284C7" stroke-width="2" rx="5"/>
+                    <rect x="65" y="50" width="90" height="75" fill="#BAE6FD" opacity="0.6"/>
+                    <!-- Corong Terbalik -->
+                    <polygon points="110,60 80,110 140,110" fill="#F3F4F6" stroke="#4B5563" stroke-width="1.5"/>
+                    <!-- Tabung Reaksi Penampung Gas -->
+                    <rect x="100" y="20" width="20" height="60" fill="#FFFFFF" stroke="#4B5563" stroke-width="1.5" rx="3"/>
+                    <!-- Gelembung Gas di Tabung -->
+                    <ellipse cx="110" cy="35" rx="6" ry="10" fill="#38BDF8"/>
+                    <!-- Hydrilla di bawah -->
+                    <path d="M95,110 Q110,95 125,110 Z" fill="#16A34A"/>
+                    <path d="M85,115 Q100,100 115,115 Z" fill="#22C55E"/>
+                    <path d="M105,115 Q120,100 135,115 Z" fill="#15803D"/>
+                    <text x="110" y="142" font-size="10" text-anchor="middle" fill="#374151">Tanaman Hydrilla</text>
+                </svg>
+            </div>
+            <div class="question-text">Berdasarkan hasil percobaan (semakin dekat cahaya, gelembung semakin banyak), tentukan pernyataan Benar atau Salah berikut:</div>
+            <table class="bs-table">
+                <thead>
+                    <tr>
+                        <th>Pernyataan</th>
+                        <th class="text-center">Benar</th>
+                        <th class="text-center">Salah</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1. Peningkatan jumlah gelembung berkaitan dengan meningkatnya laju fotolisis H₂O yang dipicu oleh energi cahaya.</td>
+                        <td class="text-center"><input type="radio" name="q6_1" value="B"></td>
+                        <td class="text-center"><input type="radio" name="q6_1" value="S"></td>
+                    </tr>
+                    <tr>
+                        <td>2. Gas yang terkumpul merupakan hasil langsung dari pemecahan H₂O pada reaksi yang bergantung pada cahaya.</td>
+                        <td class="text-center"><input type="radio" name="q6_2" value="B"></td>
+                        <td class="text-center"><input type="radio" name="q6_2" value="S"></td>
+                    </tr>
+                    <tr>
+                        <td>3. Gas yang terbentuk berasal dari oksidasi senyawa organik melalui respirasi sel selama percobaan berlangsung.</td>
+                        <td class="text-center"><input type="radio" name="q6_3" value="B"></td>
+                        <td class="text-center"><input type="radio" name="q6_3" value="S"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="discussion-box" id="disc-6">
+                <div class="correct-answer-note">Kunci Jawaban: 1 (Benar), 2 (Benar), 3 (Salah)</div>
+                <div>Pembahasan: Gelembung gas oksigen (O₂) pada fotosintesis Hydrilla merupakan produk dari reaksi fotolisis air pada reaksi terang yang bergantung pada cahaya.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 7 -->
+        <div class="question-card" data-q="7">
+            <span class="kd-badge">KD: Sistem Pernapasan Manusia</span>
+            <div class="question-text">7. Seorang siswa laki-laki berusia 17 tahun datang dengan keluhan batuk berdahak lebih dari 3 minggu, demam ringan sore hari, keringat malam, berat badan turun. Foto rontgen menunjukkan bercak di apeks paru dan ditemukan bakteri tahan asam (<i>Mycobacterium tuberculosis</i>). Analisis hubungan gejala dengan gangguan sistem pernapasan adalah ....</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q7" value="A"> A. Alveolus mengalami penyempitan akibat kontraksi otot polos sehingga pertukaran gas terganggu.</label>
+                <label class="option-label"><input type="radio" name="q7" value="B"> B. Infeksi Mycobacterium tuberculosis menyebabkan kerusakan jaringan alveolus sehingga luas permukaan difusi oksigen berkurang dan muncul gejala batuk kronis serta penurunan berat badan.</label>
+                <label class="option-label"><input type="radio" name="q7" value="C"> C. Peradangan pada bronkus akibat infeksi virus meningkatkan produksi lendir sehingga terjadi batuk berdahak.</label>
+                <label class="option-label"><input type="radio" name="q7" value="D"> D. Kerusakan pleura menyebabkan cairan memenuhi rongga dada sehingga pasien mengalami batuk berdarah.</label>
+                <label class="option-label"><input type="radio" name="q7" value="E"> E. Infeksi bakteri pada laring menyebabkan penyempitan saluran napas atas.</label>
+            </div>
+            <div class="discussion-box" id="disc-7">
+                <div class="correct-answer-note">Kunci Jawaban: B</div>
+                <div>Pembahasan: Tuberkulosis (TBC) yang disebabkan oleh Mycobacterium tuberculosis merusak jaringan paru (alveolus), mengganggu difusi gas, serta menimbulkan gejala sistemik seperti penurunan berat badan dan batuk kronis.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 8 (SVG Komponen Darah) -->
+        <div class="question-card" data-q="8">
+            <span class="kd-badge">KD: Sistem Peredaran Darah</span>
+            <div class="question-text">8. Perhatikan ilustrasi komponen-komponen sel darah berikut:</div>
+            <div class="svg-container">
+                <svg width="320" height="100" viewBox="0 0 320 100">
+                    <!-- Komponen I: Eritrosit -->
+                    <g transform="translate(60, 50)">
+                        <ellipse cx="0" cy="0" rx="30" ry="18" fill="#DC2626" opacity="0.9"/>
+                        <ellipse cx="0" cy="0" rx="15" ry="8" fill="#FEE2E2" opacity="0.5"/>
+                        <text x="0" y="35" font-size="12" text-anchor="middle" fill="#374151" font-weight="bold">Komponen I</text>
+                    </g>
+                    <!-- Komponen II: Leukosit -->
+                    <g transform="translate(160, 50)">
+                        <circle cx="0" cy="0" r="22" fill="#3B82F6" opacity="0.8"/>
+                        <path d="M-8,-5 Q0,-15 8,-5 Q12,5 5,12 Q-5,12 -10,5 Z" fill="#1E3A8A"/>
+                        <text x="0" y="35" font-size="12" text-anchor="middle" fill="#374151" font-weight="bold">Komponen II</text>
+                    </g>
+                    <!-- Komponen III: Trombosit -->
+                    <g transform="translate(260, 50)">
+                        <path d="M-10,-5 Q-5,-12 5,-10 Q12,-2 8,8 Q0,12 -8,6 Z" fill="#F59E0B" opacity="0.9"/>
+                        <text x="0" y="35" font-size="12" text-anchor="middle" fill="#374151" font-weight="bold">Komponen III</text>
+                    </g>
+                </svg>
+            </div>
+            <div class="question-text">Manakah pernyataan yang paling tepat mengenai komponen sel darah tersebut?</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q8" value="A"> A. Komponen I dan II sama-sama tidak berinti sehingga keduanya berfungsi utama mengangkut oksigen.</label>
+                <label class="option-label"><input type="radio" name="q8" value="B"> B. Komponen I dan III sama-sama mengandung hemoglobin sehingga berperan dalam transpor oksigen.</label>
+                <label class="option-label"><input type="radio" name="q8" value="C"> C. Komponen I berbentuk bikonkaf untuk memperluas difusi gas, komponen II berperan dalam pembekuan darah, dan komponen III berfungsi dalam pertahanan tubuh.</label>
+                <label class="option-label"><input type="radio" name="q8" value="D"> D. Komponen II berperan menghasilkan antibodi, sedangkan komponen III membentuk sumbat untuk menghentikan perdarahan.</label>
+                <label class="option-label"><input type="radio" name="q8" value="E"> E. Komponen I adalah eritrosit pembawa oksigen, komponen II adalah leukosit berinti, dan komponen III adalah trombosit (fragmen sel tak berinti) untuk pembekuan darah.</label>
+            </div>
+            <div class="discussion-box" id="disc-8">
+                <div class="correct-answer-note">Kunci Jawaban: E</div>
+                <div>Pembahasan: Komponen I adalah eritrosit (sel darah merah), Komponen II adalah leukosit (sel darah putih berinti), dan Komponen III adalah trombosit (keping darah/fragmen sel tak berinti).</div>
+            </div>
+        </div>
+
+        <!-- SOAL 9 (Pilihan Ganda Kompleks - Checkbox) -->
+        <div class="question-card" data-q="9">
+            <span class="kd-badge">KD: Sistem Peredaran Darah & Hemostatis</span>
+            <div class="question-text">9. Seorang atlet mengalami benturan keras pada paha sehingga timbul memar kebiruan akibat pecahnya kapiler kecil. Tubuh merespons dengan mekanisme pembekuan darah, dan warna kebiruan muncul akibat degradasi hemoglobin dari eritrosit yang pecah. Respons tubuh atau kejadian yang benar adalah… <b>(Pilihlah lebih dari satu jawaban yang benar!)</b></div>
+            <div class="options-group">
+                <label class="option-label"><input type="checkbox" name="q9" value="A"> A. Pecahnya kapiler menyebabkan darah keluar ke jaringan sekitar</label>
+                <label class="option-label"><input type="checkbox" name="q9" value="B"> B. Pembentukan fibrin untuk menstabilkan bekuan darah</label>
+                <label class="option-label"><input type="checkbox" name="q9" value="C"> C. Vasokonstriksi pembuluh darah untuk mengurangi perdarahan</label>
+                <label class="option-label"><input type="checkbox" name="q9" value="D"> D. Eritrosit yang keluar menimbulkan warna kebiruan pada kulit</label>
+                <label class="option-label"><input type="checkbox" name="q9" value="E"> E. Leukosit berdiferensiasi menjadi eritrosit baru di dalam jaringan otot paha</label>
+            </div>
+            <div class="discussion-box" id="disc-9">
+                <div class="correct-answer-note">Kunci Jawaban: A, B, C, D</div>
+                <div>Pembahasan: Pecahnya kapiler membuat darah keluar ke jaringan (memar), direspon tubuh dengan vasokonstriksi dan pembentukan fibrin, serta eritrosit ekstravaskular terdegradasi menimbulkan warna kebiruan. Pilihan E salah.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 10 -->
+        <div class="question-card" data-q="10">
+            <span class="kd-badge">KD: Kesehatan Sistem Peredaran Darah</span>
+            <div class="question-text">10. Raka (17 tahun) memiliki tekanan darah 135/88 mmHg (normal ~120/80), kolesterol total 218 mg/dL (normal &lt;200), sering mengonsumsi makanan cepat saji/gorengan, jarang berolahraga, dan banyak duduk bermain gim. Kebiasaan yang paling berpotensi meningkatkan risiko gangguan sistem peredaran darah adalah ....</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q10" value="A"> A. Membaca buku dalam posisi duduk selama 30 menit</label>
+                <label class="option-label"><input type="radio" name="q10" value="B"> B. Mengonsumsi makanan cepat saji dan gorengan secara berlebihan serta kurang aktivitas fisik</label>
+                <label class="option-label"><input type="radio" name="q10" value="C"> C. Berolahraga ringan secara teratur setiap minggu</label>
+                <label class="option-label"><input type="radio" name="q10" value="D"> D. Memperbanyak konsumsi buah dan sayuran segar</label>
+                <label class="option-label"><input type="radio" name="q10" value="E"> E. Mengurangi makanan berlemak tinggi</label>
+            </div>
+            <div class="discussion-box" id="disc-10">
+                <div class="correct-answer-note">Kunci Jawaban: B</div>
+                <div>Pembahasan: Pola konsumsi tinggi lemak jenuh (fast food/gorengan) serta minimnya aktivitas fisik memicu penumpukan plak aterosklerosis dan hipertensi ringan.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 11 -->
+        <div class="question-card" data-q="11">
+            <span class="kd-badge">KD: Sistem Ekskresi & Homeostasis</span>
+            <div class="question-text">11. Seorang pendaki di pegunungan tinggi bersuhu 5°C jarang minum sepanjang jalur pendakian. Untuk mempertahankan homeostasis tubuh, bagaimana mekanisme kerja sistem ekskresi yang paling tepat?</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q11" value="A"> A. Hipotalamus menurunkan sekresi ADH, dinding tubulus kurang permeabel, urine encer bervolume banyak.</label>
+                <label class="option-label"><input type="radio" name="q11" value="B"> B. Hipotalamus meningkatkan sekresi ADH, dinding tubulus kolektivus menjadi lebih permeabel terhadap air, sehingga air banyak direabsorpsi dan urine pekat bervolume sedikit.</label>
+                <label class="option-label"><input type="radio" name="q11" value="C"> C. Kulit meningkatkan keringat untuk membuang garam sementara ginjal mengurangi reabsorpsi air.</label>
+                <label class="option-label"><input type="radio" name="q11" value="D"> D. Ginjal meningkatkan laju filtrasi glomerulus (GFR) secara drastis agar air cepat dibuang.</label>
+                <label class="option-label"><input type="radio" name="q11" value="E"> E. Hormon aldosteron dihambat total agar natrium dibuang bersama urine.</label>
+            </div>
+            <div class="discussion-box" id="disc-11">
+                <div class="correct-answer-note">Kunci Jawaban: B</div>
+                <div>Pembahasan: Kondisi dehidrasi/suhu dingin memicu hipotalamus merangsang kelenjar hipofisis posterior mensekresi ADH. ADH meningkatkan permeabilitas tubulus kolektivus agar air direabsorpsi kembali ke darah, menghasilkan urine pekat dan sedikit.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 12 (Tabel Benar/Salah) -->
+        <div class="question-card" data-q="12">
+            <span class="kd-badge">KD: Sistem Saraf & Psikotropika</span>
+            <div class="question-text">12. Tentukan apakah pernyataan mengenai pengaruh narkotika terhadap sistem saraf berikut Benar atau Salah:</div>
+            <table class="bs-table">
+                <thead>
+                    <tr>
+                        <th>Pernyataan</th>
+                        <th class="text-center">Benar</th>
+                        <th class="text-center">Salah</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Memengaruhi kerja neurotransmiter pada sistem saraf pusat</td>
+                        <td class="text-center"><input type="radio" name="q12_1" value="B"></td>
+                        <td class="text-center"><input type="radio" name="q12_1" value="S"></td>
+                    </tr>
+                    <tr>
+                        <td>Meningkatkan fungsi otak secara permanen ke arah yang lebih baik</td>
+                        <td class="text-center"><input type="radio" name="q12_2" value="B"></td>
+                        <td class="text-center"><input type="radio" name="q12_2" value="S"></td>
+                    </tr>
+                    <tr>
+                        <td>Mempengaruhi fungsi hipotalamus (pengatur suhu, nafsu makan, dan emosi)</td>
+                        <td class="text-center"><input type="radio" name="q12_3" value="B"></td>
+                        <td class="text-center"><input type="radio" name="q12_3" value="S"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="discussion-box" id="disc-12">
+                <div class="correct-answer-note">Kunci Jawaban: 1 (Benar), 2 (Salah), 3 (Benar)</div>
+                <div>Pembahasan: Narkotika/stimulan mengganggu kerja neurotransmiter SSP dan area hipotalamus, bukan meningkatkan fungsi otak secara positif/permanen melainkan merusaknya.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 13 -->
+        <div class="question-card" data-q="13">
+            <span class="kd-badge">KD: Sistem Imun & HIV/AIDS</span>
+            <div class="question-text">13. Seorang pasien terinfeksi HIV mengalami penurunan limfosit T CD4⁺ secara progresif, diikuti infeksi jamur berulang. Hubungan yang paling tepat antara sel yang diserang HIV dengan kondisi pasien adalah ...</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q13" value="A"> A. Penurunan CD4⁺ menyebabkan produksi eritrosit berkurang sehingga kekurangan oksigen.</label>
+                <label class="option-label"><input type="radio" name="q13" value="B"> B. Penurunan CD4⁺ menyebabkan koordinasi respons imun terganggu sehingga kemampuan tubuh menghadapi berbagai patogen (infeksi oportunistik) menurun.</label>
+                <label class="option-label"><input type="radio" name="q13" value="C"> C. Penurunan CD4⁺ menyebabkan trombosit kehilangan kemampuan membekukan darah.</label>
+                <label class="option-label"><input type="radio" name="q13" value="D"> D. Penurunan CD4⁺ menyebabkan sel fagosit tidak dapat melakukan respirasi seluler.</label>
+                <label class="option-label"><input type="radio" name="q13" value="E"> E. Penurunan CD4⁺ menyebabkan sel tubuh kehilangan kemampuan menghasilkan energi.</label>
+            </div>
+            <div class="discussion-box" id="disc-13">
+                <div class="correct-answer-note">Kunci Jawaban: B</div>
+                <div>Pembahasan: Sel T helper (CD4⁺) adalah pengatur utama sistem imun adaptif. Penurunannya melumpuhkan koordinasi respons imun terhadap infeksi oportunistik (seperti jamur).</div>
+            </div>
+        </div>
+
+        <!-- SOAL 14 & 15 -->
+        <div class="question-card" data-q="14">
+            <span class="kd-badge">KD: Sistem Endokrin & Diabetes</span>
+            <div class="question-text">14-15. Perhatikan data Uji Toleransi Glukosa Oral (TTGO) dan kadar insulin serum pada Pasien X dan Pasien Y:</div>
+            <table class="data-table">
+                <tr><th>Waktu Pengukuran</th><th>Pasien X</th><th>Pasien Y</th><th>Normal</th></tr>
+                <tr><td>Puasa</td><td>120 mg/dL</td><td>110 mg/dL</td><td>&lt; 100 mg/dL</td></tr>
+                <tr><td>Menit ke-60</td><td>240 mg/dL</td><td>210 mg/dL</td><td>&lt; 180 mg/dL</td></tr>
+                <tr><td>Jam ke-2</td><td>235 mg/dL</td><td>180 mg/dL</td><td>&lt; 140 mg/dL</td></tr>
+                <tr><td>Kadar Insulin Serum (Jam ke-2)</td><td>0,1 ng/mL (Sangat Rendah)</td><td>18,5 ng/mL (Sangat Tinggi)</td><td>2,6 - 24,9 ng/mL</td></tr>
+            </table>
+            <div class="question-text">Berdasarkan data di atas, analisis gangguan hormonal yang dialami Pasien X dan Pasien Y adalah...</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q14" value="A"> A. Pasien X mengalami Diabetes Tipe 2 karena sel beta pankreas rusak total.</label>
+                <label class="option-label"><input type="radio" name="q14" value="B"> B. Pasien Y mengalami Diabetes Tipe 1 karena organ target merespons berlebihan.</label>
+                <label class="option-label"><input type="radio" name="q14" value="C"> C. Pasien X mengalami kegagalan sekresi insulin oleh sel beta pankreas (Diabetes Tipe 1), sedangkan Pasien Y mengalami resistensi insulin pada sel-sel tubuhnya (Diabetes Tipe 2).</label>
+                <label class="option-label"><input type="radio" name="q14" value="D"> D. Pasien Y mengalami kekurangan hormon glukagon dari sel alfa pankreas.</label>
+                <label class="option-label"><input type="radio" name="q14" value="E"> E. Kedua pasien mengalami gangguan yang sama persis.</label>
+            </div>
+            <div class="discussion-box" id="disc-14">
+                <div class="correct-answer-note">Kunci Jawaban: C</div>
+                <div>Pembahasan: Pasien X memiliki insulin sangat rendah (defisiensi sekresi/Tipe 1), sedangkan Pasien Y memiliki kadar gula tinggi namun insulin sangat tinggi/normal-tinggi menandakan resistensi reseptor insulin (Tipe 2).</div>
+            </div>
+        </div>
+
+        <!-- SOAL 16 (Pilihan Ganda Kompleks - Checkbox) -->
+        <div class="question-card" data-q="15">
+            <span class="kd-badge">KD: Sistem Reproduksi & Teknologi Bantuan Fertilisasi</span>
+            <div class="question-text">15. Pak Dimas terdiagnosis Kriptorkidisme (riwayat testis di rongga perut) dan Teratozoospermia (&gt;80% bentuk sperma abnormal). Penanganan medis atau teknologi reproduksi bantuan yang tepat untuk mendukung kehamilan pasangan ini adalah... <b>(Pilih semua jawaban yang benar!)</b></div>
+            <div class="options-group">
+                <label class="option-label"><input type="checkbox" name="q16" value="A"> A. Teknik Bayi Tabung dengan ICSI (Intracytoplasmic Sperm Injection), yaitu memilih satu sel sperma dengan bentuk paling normal lalu disuntikkan langsung ke dalam sel telur di laboratorium.</label>
+                <label class="option-label"><input type="checkbox" name="q16" value="B"> B. Pemberian terapi suplemen antioksidan dan zinc dosis terukur untuk menekan stres oksidatif di testis.</label>
+                <label class="option-label"><input type="checkbox" name="q16" value="C"> C. Prosedur Sperm Selection / Pemilahan Sperma berbasis Mikroskopi Pembesaran Tinggi (IMSI) untuk memisahkan sperma normal bermorfologi utuh.</label>
+                <label class="option-label"><input type="checkbox" name="q16" value="D"> D. Tindakan Inseminasi Buatan biasa (IUI) tanpa pemilahan khusus karena sperma abnormal tetap memiliki daya tembus setara.</label>
+                <label class="option-label"><input type="checkbox" name="q16" value="E"> E. Pemberian hormon estrogen sintetis dosis tinggi pada pria untuk menetralkan suhu skrotum.</label>
+            </div>
+            <div class="discussion-box" id="disc-15">
+                <div class="correct-answer-note">Kunci Jawaban: A, B, C</div>
+                <div>Pembahasan: Teratozoospermia parah ditangani dengan teknik ICSI/IMSI pada bayi tabung serta terapi antioksidan/zinc. IUI biasa tidak efektif karena tingginya sperma abnormal, dan estrogen bukan terapi utama untuk pria.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 17 (Tabel Benar/Salah) -->
+        <div class="question-card" data-q="16">
+            <span class="kd-badge">KD: Kehamilan & Preeklamsia</span>
+            <div class="question-text">16. Tentukan apakah pernyataan berikut Benar atau Salah terkait dampak preklamsia bagi kesehatan ibu dan janin:</div>
+            <table class="bs-table">
+                <thead>
+                    <tr>
+                        <th>Pernyataan</th>
+                        <th class="text-center">Benar</th>
+                        <th class="text-center">Salah</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>A. Terganggunya aliran darah ke plasenta dapat menyebabkan janin kekurangan nutrisi dan oksigen, sehingga pertumbuhannya terhambat.</td>
+                        <td class="text-center"><input type="radio" name="q17_a" value="B"></td>
+                        <td class="text-center"><input type="radio" name="q17_a" value="S"></td>
+                    </tr>
+                    <tr>
+                        <td>B. Preeklamsia terjadi karena janin secara langsung menularkan sel kanker darah ke tubuh ibu hamil.</td>
+                        <td class="text-center"><input type="radio" name="q17_b" value="B"></td>
+                        <td class="text-center"><input type="radio" name="q17_b" value="S"></td>
+                    </tr>
+                    <tr>
+                        <td>C. Kerusakan pada pembuluh darah ibu akibat preeklamsia dapat mengganggu fungsi ginjal, sehingga protein bocor ke dalam urine.</td>
+                        <td class="text-center"><input type="radio" name="q17_c" value="B"></td>
+                        <td class="text-center"><input type="radio" name="q17_c" value="S"></td>
+                    </tr>
+                    <tr>
+                        <td>D. Kondisi preeklamsia yang parah dapat berkembang menjadi eklamsia, yaitu kondisi berbahaya yang ditandai dengan kejang pada ibu hamil.</td>
+                        <td class="text-center"><input type="radio" name="q17_d" value="B"></td>
+                        <td class="text-center"><input type="radio" name="q17_d" value="S"></td>
+                    </tr>
+                    <tr>
+                        <td>E. Preeklamsia dapat disembuhkan secara instan hanya dengan meminum vitamin C tanpa pengawasan medis.</td>
+                        <td class="text-center"><input type="radio" name="q17_e" value="B"></td>
+                        <td class="text-center"><input type="radio" name="q17_e" value="S"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="discussion-box" id="disc-16">
+                <div class="correct-answer-note">Kunci Jawaban: A (Benar), B (Salah), C (Benar), D (Benar), E (Salah)</div>
+                <div>Pembahasan: Preeklamsia melibatkan kegagalan invasi trofoblas, gangguan pembuluh darah ginjal (proteinuria), hipertensi, serta risiko eklamsia (kejang). Bukan penularan sel kanker.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 18 -->
+        <div class="question-card" data-q="17">
+            <span class="kd-badge">KD: Metode Ilmiah & Fotosintesis</span>
+            <div class="question-text">17. Rehan menguji Hydrilla pada 3 perangkat (A: Matahari langsung, B: Lampu redup, C: Lemari gelap). Hasilnya gelembung berturut-turut sangat banyak, sedikit, dan tidak ada. Pertanyaan ilmiah yang paling relevan untuk diuji adalah...</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q18" value="A"> A. Apakah perbedaan intensitas cahaya memengaruhi banyaknya gelembung gas yang dihasilkan oleh tanaman Hydrilla?</label>
+                <label class="option-label"><input type="radio" name="q18" value="B"> B. Mengapa tanaman Hydrilla membutuhkan media air jernih agar dapat tumbuh dengan subur?</label>
+                <label class="option-label"><input type="radio" name="q18" value="C"> C. Apakah warna daun tanaman Hydrilla akan berubah menjadi lebih cerah?</label>
+                <label class="option-label"><input type="radio" name="q18" value="D"> D. Berapa lama umur hidup tanaman Hydrilla jika dipindahkan ke wadah tertutup?</label>
+                <label class="option-label"><input type="radio" name="q18" value="E"> E. Apakah Hydrilla merupakan tumbuhan air paling efektif menghasilkan oksigen?</label>
+            </div>
+            <div class="discussion-box" id="disc-17">
+                <div class="correct-answer-note">Kunci Jawaban: A</div>
+                <div>Pembahasan: Variabel manipulasi utama dalam eksperimen Rehan adalah intensitas cahaya (terbuka, redup, gelap), sehingga rumusan masalah yang tepat menanyakan pengaruh intensitas cahaya terhadap hasil (gelembung oksigen).</div>
+            </div>
+        </div>
+
+        <!-- SOAL 19 -->
+        <div class="question-card" data-q="18">
+            <span class="kd-badge">KD: Pertumbuhan Tanaman & Fotosintesis</span>
+            <div class="question-text">18. Siswa mengamati dua tanaman kacang hijau (Tanaman A terkena cahaya, Tanaman B di tempat teduh) yang menghasilkan pertumbuhan tinggi berbeda. Pertanyaan ilmiah yang paling mengintegrasikan konsep fotosintesis, hormon (auksin), dan pertumbuhan adalah ....</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q19" value="A"> A. Mengapa tanaman membutuhkan cahaya matahari?</label>
+                <label class="option-label"><input type="radio" name="q19" value="B"> B. Apakah cahaya matahari memengaruhi pertumbuhan tanaman kacang hijau?</label>
+                <label class="option-label"><input type="radio" name="q19" value="C"> C. Bagaimana pengaruh intensitas cahaya terhadap laju fotosintesis dan distribusi auksin sehingga memengaruhi pertumbuhan tinggi tanaman kacang hijau?</label>
+                <label class="option-label"><input type="radio" name="q19" value="D"> D. Apakah tanaman kacang hijau dapat hidup tanpa cahaya?</label>
+                <label class="option-label"><input type="radio" name="q19" value="E"> E. Mengapa tanaman di tempat gelap memiliki warna berbeda?</label>
+            </div>
+            <div class="discussion-box" id="disc-18">
+                <div class="correct-answer-note">Kunci Jawaban: C</div>
+                <div>Pembahasan: Pilihan C merupakan rumusan pertanyaan ilmiah yang paling komprehensif karena mencakup variabel kompleks: intensitas cahaya, laju fotosintesis, kerja hormon auksin, dan pertumbuhan tinggi tanaman.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 20 -->
+        <div class="question-card" data-q="19">
+            <span class="kd-badge">KD: Pengolahan Sampah & Metode Pengumpulan Data</span>
+            <div class="question-text">19. Murid melakukan proyek pengolahan sampah organik melalui 3 metode: penimbunan konvensional, ecoenzyme, dan pengomposan anaerob dalam karung bermikroorganisme. Metode pengumpulan data yang paling tepat untuk mengetahui <i>kecepatan penguraian</i> sampah dari ketiga metode tersebut adalah....</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q20" value="A"> A. Membandingkan hasil akhir pengomposan dari ketiga metode di akhir minggu keempat.</label>
+                <label class="option-label"><input type="radio" name="q20" value="B"> B. Melakukan pengamatan berkala terhadap perubahan tekstur, berat, dan bau sampah setiap hari atau secara periodik dari ketiga metode tersebut.</label>
+                <label class="option-label"><input type="radio" name="q20" value="C"> C. Membaca jurnal ilmiah yang membahas kelebihan masing-masing metode.</label>
+                <label class="option-label"><input type="radio" name="q20" value="D"> D. Mengunjungi tempat pengolahan sampah organik untuk melihat proses secara langsung.</label>
+                <label class="option-label"><input type="radio" name="q20" value="E"> E. Mewawancarai petugas kebersihan tentang cara pengelolaan sampah.</label>
+            </div>
+            <div class="discussion-box" id="disc-19">
+                <div class="correct-answer-note">Kunci Jawaban: B</div>
+                <div>Pembahasan: Untuk mengukur tingkat "kecepatan penguraian" secara eksperimental, dibutuhkan data empiris berkala (seperti perubahan fisik, tekstur, dan parameter massa dari waktu ke waktu).</div>
+            </div>
+        </div>
+
+        <!-- SOAL 21 -->
+        <div class="question-card" data-q="20">
+            <span class="kd-badge">KD: Fisiologi Aktivitas Fisik & Integrasi Sistem Organ</span>
+            <div class="question-text">20. Siswa menyelidiki fisiologi tubuh sebelum dan sesudah berlari 10 menit (pernapasan, denyut nadi, keringat, dan karakteristik urine). Pertanyaan ilmiah yang paling kompleks, relevan, dan dapat diuji karena mengintegrasikan beberapa sistem biologi sekaligus adalah...</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q21" value="A"> A. Apakah aktivitas fisik menyebabkan frekuensi pernapasan seseorang meningkat?</label>
+                <label class="option-label"><input type="radio" name="q21" value="B"> B. Apakah aktivitas fisik menyebabkan produksi keringat menjadi lebih banyak?</label>
+                <label class="option-label"><input type="radio" name="q21" value="C"> C. Bagaimana pengaruh aktivitas fisik dengan intensitas berbeda terhadap denyut nadi dan frekuensi pernapasan seseorang?</label>
+                <label class="option-label"><input type="radio" name="q21" value="D"> D. Bagaimana peningkatan intensitas aktivitas fisik memengaruhi kebutuhan energi sel, frekuensi pernapasan, denyut jantung, serta pengeluaran zat sisa melalui paru-paru, ginjal, dan kulit?</label>
+                <label class="option-label"><input type="radio" name="q21" value="E"> E. Mengapa seseorang mengalami peningkatan denyut jantung setelah berlari?</label>
+            </div>
+            <div class="discussion-box" id="disc-20">
+                <div class="correct-answer-note">Kunci Jawaban: D</div>
+                <div>Pembahasan: Pilihan D mencakup integrasi sistem respirasi, sirkulasi, ekskresi (kulit dan ginjal), serta metabolisme energi seluler secara menyeluruh.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 22 -->
+        <div class="question-card" data-q="21">
+            <span class="kd-badge">KD: Kerja Enzim & Hipotesis</span>
+            <div class="question-text">21. Siswa menguji enzim katalase hati ayam pada berbagai pH. Hipotesis: "Aktivitas optimum pada pH netral (7) dan turun drastis di lingkungan asam/basa."<br>
+            Data: pH 3 (Padam/tidak ada), pH 5 (Redup), pH 7 (Menyala terang), pH 9 (Redup), pH 11 (Padam). Hubungan data dengan hipotesis adalah...</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q22" value="A"> A. Hipotesis ditolak, karena data menunjukkan enzim katalase tetap aktif pada pH ekstrem.</label>
+                <label class="option-label"><input type="radio" name="q22" value="B"> B. Hipotesis diterima, karena data menunjukkan aktivitas enzim paling tinggi terjadi pada pH netral (pH = 7) dan menurun pada lingkungan yang lebih asam atau basa.</label>
+                <label class="option-label"><input type="radio" name="q22" value="C"> C. Hipotesis ditolak karena enzim tidak membutuhkan pH tertentu.</label>
+                <label class="option-label"><input type="radio" name="q22" value="D"> D. Hipotesis diterima karena pada pH ekstrem enzim mengalami peningkatan produksi.</label>
+                <label class="option-label"><input type="radio" name="q22" value="E"> E. Hipotesis ditolak karena aktivitas tertinggi seharusnya di asam.</label>
+            </div>
+            <div class="discussion-box" id="disc-21">
+                <div class="correct-answer-note">Kunci Jawaban: B</div>
+                <div>Pembahasan: Data empiris menunjukkan nyala api paling terang pada pH 7 dan mati/redup pada pH 3 dan 11, yang sangat konsisten dan mendukung hipotesis siswa.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 23 -->
+        <div class="question-card" data-q="22">
+            <span class="kd-badge">KD: Ekosistem & Komponen Biotik-Abiotik</span>
+            <div class="question-text">22. Danau Toba mengalami perubahan ekosistem sejak ikan red devil (<i>Amphilophus labiatus</i>) berkembang biak dengan cepat dan memangsa ikan lokal. Hubungan antara komponen biotik dan abiotik yang tepat adalah ….</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q23" value="A"> A. Ikan red devil sebagai komponen biotik mampu hidup pada dalam lingkungan danau Toba</label>
+                <label class="option-label"><input type="radio" name="q23" value="B"> B. Ikan lokal termasuk komponen abiotik asli danau Toba</label>
+                <label class="option-label"><input type="radio" name="q23" value="C"> C. Suhu dan air danau Toba mendukung populasi ikan red devil</label>
+                <label class="option-label"><input type="radio" name="q23" value="D"> D. Air danau Toba termasuk komponen biotik</label>
+                <label class="option-label"><input type="radio" name="q23" value="E"> E. Ikan red devil menghasilkan karbondioksida dalam jumlah banyak yang berbahaya untuk tumbuhan</label>
+            </div>
+            <div class="discussion-box" id="disc-22">
+                <div class="correct-answer-note">Kunci Jawaban: A</div>
+                <div>Pembahasan: Ikan red devil merupakan organisme hidup (biotik) yang beradaptasi dan berinteraksi dengan faktor lingkungan perairan Danau Toba.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 24 -->
+        <div class="question-card" data-q="23">
+            <span class="kd-badge">KD: Spesies Asing & Keanekaragaman Hayati</span>
+            <div class="question-text">23. Masuknya ikan Nila dan ikan Aligator ke sebuah danau suaka alam menyebabkan penurunan tajam spesies ikan asli (endemik) akibat predasi puncak dan kompetisi ketat ruang pemijahan. Pernyataan yang paling tepat mengenai dampak ekologis masuknya spesies asing ini adalah...</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q24" value="A"> A. Spesies asing akan selalu meningkatkan keanekaragaman hayati secara permanen.</label>
+                <label class="option-label"><input type="radio" name="q24" value="B"> B. Spesies asing dapat memicu kepunahan spesies lokal melalui kompetisi ketat dan predasi, sehingga menurunkan keanekaragaman hayati.</label>
+                <label class="option-label"><input type="radio" name="q24" value="C"> C. Spesies asing tidak akan berdampak apa pun jika habitat danau sangat luas.</label>
+                <label class="option-label"><input type="radio" name="q24" value="D"> D. Spesies asing akan beradaptasi dan melebur secara genetis melalui kawin silang fertil.</label>
+                <label class="option-label"><input type="radio" name="q24" value="E"> E. Penurunan jumlah ikan asli bersifat sementara karena ekosistem perairan memiliki daya lentur mutlak.</label>
+            </div>
+            <div class="discussion-box" id="disc-23">
+                <div class="correct-answer-note">Kunci Jawaban: B</div>
+                <div>Pembahasan: Introduksi spesies asing invasif (predator/kompetitor kuat) sering kali mengancam kelestarian spesies endemik lokal dan menurunkan keanekaragaman hayati ekosistem.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 25 -->
+        <div class="question-card" data-q="24">
+            <span class="kd-badge">KD: Enzim & Inhibitor Sianida</span>
+            <div class="question-text">24. Sianida berikatan secara irreversibel pada sisi alosterik enzim sitokrom c oksidase (enzim kunci rantai transpor elektron di mitokondria), mengubah bentuk sisi aktif sehingga substrat tak dapat berikatan. Dampak langsung terhadap metabolisme seluler dan jenis hambatan yang terjadi adalah...</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q25" value="A"> A. Inhibisi kompetitif; produksi ATP melalui fosforilasi oksidatif meningkat pesat.</label>
+                <label class="option-label"><input type="radio" name="q25" value="B"> B. Inhibisi non-kompetitif; pembentukan ATP terhenti karena rantai transpor elektron terputus.</label>
+                <label class="option-label"><input type="radio" name="q25" value="C"> C. Inhibisi kompetitif; laju glikolisis di sitosol langsung terhenti total.</label>
+                <label class="option-label"><input type="radio" name="q25" value="D"> D. Aktivasi alosterik; fermentasi asam laktat terhenti karena sel kekurangan NADH.</label>
+                <label class="option-label"><input type="radio" name="q25" value="E"> E. Inhibisi non-kompetitif; konsentrasi oksigen di dalam sel menurun tajam.</label>
+            </div>
+            <div class="discussion-box" id="disc-24">
+                <div class="correct-answer-note">Kunci Jawaban: B</div>
+                <div>Pembahasan: Karena sianida berikatan pada sisi alosterik yang mengubah bentuk sisi aktif enzim tanpa bersaing langsung dengan substrat, ini merupakan inhibisi non-kompetitif yang memutus rantai transpor elektron dan menghentikan sintesis ATP.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 26 (Tabel Benar/Salah) -->
+        <div class="question-card" data-q="25">
+            <span class="kd-badge">KD: Fisiologi Pernapasan & Penyesuaian Lingkungan</span>
+            <div class="question-text">25. Tentukan apakah pernyataan mengenai respons organ respirasi terhadap kondisi lingkungan berikut Benar atau Salah:</div>
+            <table class="bs-table">
+                <thead>
+                    <tr>
+                        <th>Pernyataan</th>
+                        <th class="text-center">Benar</th>
+                        <th class="text-center">Salah</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Saat menyelam ke air dalam (tekanan tinggi) lalu naik terlalu cepat tanpa dekompresi, penyelam dapat mengalami emboli udara akibat gas nitrogen larut membentuk gelembung di pembuluh darah (Hukum Boyle).</td>
+                        <td class="text-center"><input type="radio" name="q26_1" value="B"></td>
+                        <td class="text-center"><input type="radio" name="q26_1" value="S"></td>
+                    </tr>
+                    <tr>
+                        <td>Berada di lingkungan gersang dan berdebu merangsang sel goblet saluran pernapasan menurunkan sekresi mukus agar saluran napas tetap kering.</td>
+                        <td class="text-center"><input type="radio" name="q26_2" value="B"></td>
+                        <td class="text-center"><input type="radio" name="q26_2" value="S"></td>
+                    </tr>
+                    <tr>
+                        <td>Pada penderita asma, paparan udara dingin atau alergen dapat memicu bronkokonstruksi (penyempitan otot polos bronkiolus) yang menyebabkan sesak napas.</td>
+                        <td class="text-center"><input type="radio" name="q26_3" value="B"></td>
+                        <td class="text-center"><input type="radio" name="q26_3" value="S"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="discussion-box" id="disc-25">
+                <div class="correct-answer-note">Kunci Jawaban: 1 (Benar), 2 (Salah), 3 (Benar)</div>
+                <div>Pembahasan: Di lingkungan berdebu, sel goblet justru meningkatkan sekresi mukus untuk menjebak partikel asing, bukan menurunkannya. Pernyataan 1 dan 3 benar.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 27 -->
+        <div class="question-card" data-q="26">
+            <span class="kd-badge">KD: Sistem Ekskresi & Fungsi Nefron</span>
+            <div class="question-text">26. Tes laboratorium menunjukkan pasien memiliki kadar protein albumin dan glukosa di dalam urine sekundernya. Gangguan spesifik pada nefron ginjal yang terjadi adalah...</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q27" value="A"> A. Kerusakan pada Glomerulus menyebabkan gagalnya filtrasi protein dan gangguan reabsorpsi glukosa di tubulus kontortus proksimal.</label>
+                <label class="option-label"><input type="radio" name="q27" value="B"> B. Gangguan pada Tubulus Kontortus Proksimal menyebabkan glukosa gagal direabsorpsi secara sempurna.</label>
+                <label class="option-label"><input type="radio" name="q27" value="C"> C. Kerusakan pada Lengkung Henle menyebabkan protein mengendap di saluran pengumpul.</label>
+                <label class="option-label"><input type="radio" name="q27" value="D"> D. Tubulus Kontortus Distal gagal menyaring kembali sel-sel darah merah.</label>
+                <label class="option-label"><input type="radio" name="q27" value="E"> E. Glomerulus mengalami peningkatan fungsi penyerapan.</label>
+            </div>
+            <div class="discussion-box" id="disc-26">
+                <div class="correct-answer-note">Kunci Jawaban: A</div>
+                <div>Pembahasan: Albumin di urine menunjukkan kerusakan glomerulus (gagal menyaring molekul besar protein), sedangkan glukosa di urine sekunder menunjukkan gangguan reabsorpsi pada tubulus kontortus proksimal.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 28 -->
+        <div class="question-card" data-q="27">
+            <span class="kd-badge">KD: Ekskresi & Gangguan Hormon ADH (Diabetes Insipidus)</span>
+            <div class="question-text">27. Pekerja kantor (42 tahun) mengeluhkan polyuria (7-8 liter/hari), polydipsia, berat jenis urine sangat rendah (1,001 g/mL), hipotonis, negatif glukosa/protein. Rutin minum 4-5 cangkir kopi pekat (kafein) dan stres kerja tinggi. Mekanisme gangguan ekskresi yang paling tepat adalah ...</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q28" value="A"> A. Kerusakan podosit glomerulus akibat paparan kafein berlebih.</label>
+                <label class="option-label"><input type="radio" name="q28" value="B"> B. Inhibisi pelepasan Anti-Diuretic Hormone (ADH) oleh hipofisis posterior akibat efek kafein dan stres, yang menghambat pembentukan saluran aquaporin-2 di tubulus kontortus distal dan duktus koligentus.</label>
+                <label class="option-label"><input type="radio" name="q28" value="C"> C. Kegagalan reabsorpsi glukosa secara transpor aktif di tubulus kontortus proksimal.</label>
+                <label class="option-label"><input type="radio" name="q28" value="D"> D. Kerusakan permanen pada saluran Lengkung Henle akibat dehidrasi.</label>
+                <label class="option-label"><input type="radio" name="q28" value="E"> E. Penurunan sintesis urea oleh hepar akibat konsumsi kafein.</label>
+            </div>
+            <div class="discussion-box" id="disc-27">
+                <div class="correct-answer-note">Kunci Jawaban: B</div>
+                <div>Pembahasan: Kafein dan stres kronis bertindak sebagai diuretik yang menghambat sekresi ADH. Akibatnya, saluran air (aquaporin-2) di duktus koligentus tidak terbentuk, air tidak direabsorpsi, dan dihasilkan urine encer dalam volume sangat banyak.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 29 -->
+        <div class="question-card" data-q="28">
+            <span class="kd-badge">KD: Sistem Endokrin & Respons Stres Akut</span>
+            <div class="question-text">28. Seorang siswa akan presentasi di depan banyak orang, merasakan jantung berdebu cepat, telapak tangan berkeringat, dan waspada. Hormon yang berperan dalam memicu perubahan kondisi fisiologis tersebut beserta efeknya adalah ....</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q29" value="A"> A. Peningkatan insulin yang menyebabkan kadar glukosa darah meningkat.</label>
+                <label class="option-label"><input type="radio" name="q29" value="B"> B. Peningkatan epinefrin (adrenalin) yang membantu meningkatkan ketersediaan energi dan aktivitas sistem kardiovaskular.</label>
+                <label class="option-label"><input type="radio" name="q29" value="C"> C. Peningkatan ADH yang secara langsung meningkatkan denyut jantung.</label>
+                <label class="option-label"><input type="radio" name="q29" value="D"> D. Peningkatan kalsitonin yang meningkatkan kadar kalsium darah.</label>
+                <label class="option-label"><input type="radio" name="q29" value="E"> E. Peningkatan glukagon yang menurunkan kadar glukosa darah.</label>
+            </div>
+            <div class="discussion-box" id="disc-28">
+                <div class="correct-answer-note">Kunci Jawaban: B</div>
+                <div>Pembahasan: Hormon epinefrin (adrenalin) yang disekresikan medula adrenal saat stres akut meningkatkan kerja sistem kardiovaskular (denyut jantung) dan glikogenolisis untuk suplai energi cepat.</div>
+            </div>
+        </div>
+
+        <!-- SOAL 30 -->
+        <div class="question-card" data-q="29">
+            <span class="kd-badge">KD: Sistem Saraf & Gerak Refleks</span>
+            <div class="question-text">29. Seorang siswa tidak sengaja menyentuh panci panas dan segera menarik tangannya sebelum menyadari rasa sakit. Urutan penghantaran impuls pada gerak refleks tersebut adalah ....</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q30" value="A"> A. Reseptor → neuron motorik → neuron sensorik → interneuron → efektor</label>
+                <label class="option-label"><input type="radio" name="q30" value="B"> B. Reseptor → neuron sensorik → interneuron di sumsum tulang belakang → neuron motorik → efektor (otot)</label>
+                <label class="option-label"><input type="radio" name="q30" value="C"> C. Reseptor → interneuron → neuron sensorik → neuron motorik → efektor</label>
+                <label class="option-label"><input type="radio" name="q30" value="D"> D. Efektor → neuron motorik → interneuron → neuron sensorik → reseptor</label>
+                <label class="option-label"><input type="radio" name="q30" value="E"> E. Reseptor → neuron motorik → neuron sensorik → efektor</label>
+            </div>
+            <div class="discussion-box" id="disc-29">
+                <div class="correct-answer-note">Kunci Jawaban: B</div>
+                <div>Pembahasan: Jalur impuls gerak refleks: Rangsang diterima Reseptor (kulit) → dibawa Neuron Sensorik ke Sumsum Tulang Belakang (melalui Interneuron) → diteruskan ke Neuron Motorik → menuju Efektor (otot tangan menarik diri).</div>
+            </div>
+        </div>
+
+        <!-- SOAL 31 -->
+        <div class="question-card" data-q="30">
+            <span class="kd-badge">KD: Sistem Imun Spesifik & Peran Sel T-Helper</span>
+            <div class="question-text">30. Seorang anak lahir dengan kelainan genetik sehingga tidak mampu memproduksi sel T-helper (CD4⁺) fungsional, sementara produksi sel B dan sel T-sitotoksik (CD8⁺) normal secara struktural. Dampak yang paling tepat terhadap sistem kekebalan tubuh adalah ...</div>
+            <div class="options-group">
+                <label class="option-label"><input type="radio" name="q31" value="A"> A. Sistem kekebalan nonspesifik seperti fagositosis oleh makrofag akan berhenti total.</label>
+                <label class="option-label"><input type="radio" name="q31" value="B"> B. Tubuh tetap mampu memproduksi antibodi dalam jumlah besar secara mandiri melalui sel B.</label>
+                <label class="option-label"><input type="radio" name="q31" value="C"> C. Respons imun spesifik humoral dan seluler akan sangat terganggu karena tidak adanya aktivasi sitokin oleh sel T-helper.</label>
+                <label class="option-label"><input type="radio" name="q31" value="D"> D. Anak tersebut hanya rentan terhadap infeksi bakteri luar tubuh, tetapi sangat kebal terhadap virus.</label>
+                <label class="option-label"><input type="radio" name="q31" value="E"> E. Sel T-sitotoksik dapat mengambil alih peran sel T-helper secara penuh tanpa kendala.</label>
+            </div>
+            <div class="discussion-box" id="disc-30">
+                <div class="correct-answer-note">Kunci Jawaban: C</div>
+                <div>Pembahasan: Sel T-helper (CD4⁺) memegang peran sentral dalam mensekresi sitokin yang mengaktivasi baik sel B (imunitas humoral) maupun sel T-sitotoksik (imunitas seluler). Tanpanya, koordinasi respons imun spesifik lumpuh.</div>
+            </div>
+        </div>
+
+        <div class="submit-section">
+            <button type="submit" class="btn-submit">Selesai & Periksa Jawaban</button>
+        </div>
+
+    </form>
+</div>
+
+<script>
+    // Timer Mundur Otomatis (45 Menit)
+    let totalSeconds = 45 * 60;
+    const timerDisplay = document.getElementById('time-left');
+
+    const timerInterval = setInterval(() => {
+        if (totalSeconds <= 0) {
+            clearInterval(timerInterval);
+            alert("Waktu ujian telah habis!");
+            document.getElementById('quiz-form').dispatchEvent(new Event('submit'));
+            return;
+        }
+        totalSeconds--;
+        let minutes = Math.floor(totalSeconds / 60);
+        let seconds = totalSeconds % 60;
+        timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }, 1000);
+
+    // Kunci Jawaban Baku untuk Penilaian Otomatis
+    const answerKey = {
+        q1: "B",
+        q2: "B",
+        q3: "B",
+        q4_a: "B", q4_b: "B", q4_c: "B", q4_d: "S", q4_e: "S",
+        q5: "C",
+        q6_1: "B", q6_2: "B", q6_3: "S",
+        q7: "B",
+        q8: "E",
+        q9: ["A", "B", "C", "D"], // Checkbox
+        q10: "B",
+        q11: "B",
+        q12_1: "B", q12_2: "S", q12_3: "B",
+        q13: "B",
+        q14: "C",
+        q16: ["A", "B", "C"], // Checkbox (Soal 15 di list)
+        q17_a: "B", q17_b: "S", q17_c: "B", q17_d: "B", q17_e: "S",
+        q18: "A",
+        q19: "C",
+        q20: "B",
+        q21: "D",
+        q22: "B",
+        q23: "A",
+        q24: "B",
+        q25: "B",
+        q26_1: "B", q26_2: "S", q26_3: "B",
+        q27: "A",
+        q28: "B",
+        q29: "B",
+        q30: "B",
+        q31: "C"
+    };
+
+    function evaluateQuiz(event) {
+        event.preventDefault();
+        clearInterval(timerInterval);
+
+        let score = 0;
+        let totalItems = 31; // Total item penilaian (termasuk sub-soal tabel)
+        let earnedPoints = 0;
+
+        // Evaluasi Soal Pilihan Ganda & Tabel Tunggal
+        for (let q in answerKey) {
+            if (Array.isArray(answerKey[q])) {
+                // Untuk Checkbox (Soal Kompleks)
+                let userChoices = Array.from(document.querySelectorAll(`input[name="${q}"]:checked`)).map(el => el.value);
+                let correctChoices = answerKey[q];
+                let isMatch = userChoices.length === correctChoices.length && correctChoices.every(val => userChoices.includes(val));
+                if (isMatch) earnedPoints++;
+            } else {
+                let userChoice = document.querySelector(`input[name="${q}"]:checked`);
+                if (userChoice && userChoice.value === answerKey[q]) {
+                    earnedPoints++;
+                }
+            }
+        }
+
+        let finalScore = Math.round((earnedPoints / totalItems) * 100);
+
+        // Tampilkan Dashboard Skor
+        document.getElementById('result-dashboard').style.display = 'block';
+        document.getElementById('final-score').textContent = finalScore;
+        
+        let feedback = "";
+        if (finalScore >= 85) {
+            feedback = "Luar biasa! Penguasaan materi Biologi Anda sangat sangat matang dan komprehensif.";
+        } else if (finalScore >= 70) {
+            feedback = "Bagus sekali! Anda sudah memahami sebagian besar konsep Biologi dengan baik, tingkatkan lagi pada beberapa detail.";
+        } else {
+            feedback = "Cukup baik. Silakan pelajari kembali pembahasan di bawah ini untuk memperdalam materi yang belum tepat.";
+        }
+        document.getElementById('feedback-message').textContent = feedback;
+
+        // Tampilkan Semua Kotak Pembahasan
+        const discussionBoxes = document.querySelectorAll('.discussion-box');
+        discussionBoxes.forEach(box => {
+            box.classList.add('show');
+        });
+
+        // Nonaktifkan semua input setelah ujian selesai
+        const allInputs = document.querySelectorAll('input');
+        allInputs.forEach(input => input.disabled = true);
+
+        // Scroll ke atas halaman hasil
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
