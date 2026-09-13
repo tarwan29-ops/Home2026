@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Latihan TKA - Biologi XII F</title>
+    <style>
+        :root {
+            --primary-color: #1E3A8A;
+            --accent-color: #10B981;
+            --bg-color: #F3F4F6;
+            --card-bg: #FFFFFF;
+            --text-color: #1F2937;
+            --border-color: #E5E7EB;
+            --danger-color: #EF4444;
+            --correct-bg: #D1FAE5;
+            --incorrect-bg: #FEE2E2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-bottom: 60px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .school-info h1 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        .school-info p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .timer-box {
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 10px 18px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .timer-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .timer-clock {
+            font-size: 1.5rem;
+            font-weight: bold;
+            font-family: monospace;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+
+        .question-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .badge {
+            display: inline-block;
+            background-color: #E0E7FF;
+            color: var(--primary-color);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            font-weight: 600;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .svg-container {
+            text-align: center;
+            margin: 15px 0;
+            background-color: #FAFAFA;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px dashed var(--border-color);
+        }
+
+        .svg-container svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .options-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-item:hover {
+            background-color: #F9FAFB;
+            border-color: var(--primary-color);
+        }
+
+        .option-item input {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--accent-color);
+        }
+
+        .discussion-box {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+            background-color: #F0FDF4;
+        }
+
+        .discussion-box.show {
+            display: block;
+        }
+
+        .discussion-title {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .dashboard-score {
+            display: none;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 2px solid var(--accent-color);
+        }
+
+        .score-val {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+
+        .btn-submit {
+            display: block;
+            width: 100%;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-submit:hover {
+            background-color: #059669;
+        }
+
+        .btn-submit:disabled {
+            background-color: #9CA3AF;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-container">
+            <div class="school-info">
+                <h1>Latihan TKA - Biologi XII F</h1>
+                <p>Pengampu: <strong>Tarwan, S.Pd.</strong> | SMAN 1 Kedungreja</p>
+            </div>
+            <div class="timer-box">
+                <div class="timer-title">Sisa Waktu</div>
+                <div class="timer-clock" id="timer">60:00</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Dashboard Nilai -->
+        <div id="dashboard" class="dashboard-score">
+            <h2>Hasil Simulasi Ujian Interaktif</h2>
+            <div class="score-val" id="score-display">0</div>
+            <p id="feedback-message" style="font-size: 1.1rem; color: #4B5563;"></p>
+        </div>
+
+        <form id="quiz-form">
+            <!-- Soal 1 -->
+            <div class="question-card" id="q-card-1">
+                <span class="badge">KD 3.2: Keanekaragaman Hayati</span>
+                <div class="question-text">1. Jika suatu wilayah memiliki 5 jenis pohon mangga dengan buah berukuran, rasa, dan warna berbeda, serta dihuni oleh rusa, monyet, burung, dan serangga di hutan hujan tropis, maka tingkat keanekaragaman hayati yang teramati secara berurutan adalah ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q1" value="A"> A. Jenis → Genetik → Ekosistem</label>
+                    <label class="option-item"><input type="radio" name="q1" value="B"> B. Genetik → Jenis → Ekosistem</label>
+                    <label class="option-item"><input type="radio" name="q1" value="C"> C. Ekosistem → Genetik → Jenis</label>
+                    <label class="option-item"><input type="radio" name="q1" value="D"> D. Genetik → Ekosistem → Jenis</label>
+                    <label class="option-item"><input type="radio" name="q1" value="E"> E. Jenis → Ekosistem → Genetik</label>
+                </ul>
+                <div class="discussion-box" id="disc-1">
+                    <div class="discussion-title">Kunci Jawaban: B</div>
+                    <p>Lima jenis pohon mangga (variasi intra-spesies) menunjukkan keanekaragaman genetik. Keberadaan rusa, monyet, burung, dan serangga (antar spesies) menunjukkan keanekaragaman jenis. Hutan hujan tropis menunjukkan keanekaragaman ekosistem.</p>
+                </div>
+            </div>
+
+            <!-- Soal 2 -->
+            <div class="question-card" id="q-card-2">
+                <span class="badge">KD 3.2: Konservasi Keanekaragaman Hayati</span>
+                <div class="question-text">2. Suatu daerah endemik memiliki banyak jenis tumbuhan obat yang belum diteliti. Upaya konservasi yang paling tepat untuk melindungi potensi genetik sekaligus memungkinkan penelitian berkelanjutan adalah ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q2" value="A"> A. Membuat kebun botani dan bank benih</label>
+                    <label class="option-item"><input type="radio" name="q2" value="B"> B. Menjadikan kawasan sebagai kawasan industri</label>
+                    <label class="option-item"><input type="radio" name="q2" value="C"> C. Membuka lahan untuk pertanian intensif</label>
+                    <label class="option-item"><input type="radio" name="q2" value="D"> D. Memindahkan semua tumbuhan ke kebun percobaan kota</label>
+                    <label class="option-item"><input type="radio" name="q2" value="E"> E. Melarang semua orang memasuki kawasan tersebut selamanya</label>
+                </ul>
+                <div class="discussion-box" id="disc-2">
+                    <div class="discussion-title">Kunci Jawaban: A</div>
+                    <p>Kebun botani dan bank benih merupakan bentuk konservasi (eks-situ) yang menjaga plasma nutfah/sumber daya genetik secara aman sekaligus menyediakan akses material untuk penelitian berkelanjutan.</p>
+                </div>
+            </div>
+
+            <!-- Soal 3 -->
+            <div class="question-card" id="q-card-3">
+                <span class="badge">KD 3.3: Klasifikasi Makhluk Hidup</span>
+                <div class="question-text">3. Diketahui ciri makhluk hidup: prokariotik, dinding sel tidak mengandung peptidoglikan, hidup di lingkungan ekstrem seperti air panas atau air asin. Berdasarkan sistem 5 kerajaan, makhluk ini termasuk kelompok ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q3" value="A"> A. Bakteri sejati</label>
+                    <label class="option-item"><input type="radio" name="q3" value="B"> B. Archaebakteri</label>
+                    <label class="option-item"><input type="radio" name="q3" value="C"> C. Protista bersel satu</label>
+                    <label class="option-item"><input type="radio" name="q3" value="D"> D. Fungi bersel satu</label>
+                    <label class="option-item"><input type="radio" name="q3" value="E"> E. Monera umum</label>
+                </ul>
+                <div class="discussion-box" id="disc-3">
+                    <div class="discussion-title">Kunci Jawaban: B</div>
+                    <p>Organisme prokariotik tanpa peptidoglikan pada dinding selnya dan mendiami lingkungan ekstrem (termofilik/halofilik) adalah kelompok Archaebakteri.</p>
+                </div>
+            </div>
+
+            <!-- Soal 4 -->
+            <div class="question-card" id="q-card-4">
+                <span class="badge">KD 3.3: Tata Nama Binomial</span>
+                <div class="question-text">4. Perhatikan urutan takson berikut: <i>Solanum tuberosum</i> dan <i>Solanum lycopersicum</i>. Kesimpulan yang paling tepat dari penamaan ilmiah tersebut adalah kedua tumbuhan ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q4" value="A"> A. Berbeda marga dan berbeda jenis</label>
+                    <label class="option-item"><input type="radio" name="q4" value="B"> B. Satu marga tetapi berbeda jenis</label>
+                    <label class="option-item"><input type="radio" name="q4" value="C"> C. Satu jenis tetapi berbeda marga</label>
+                    <label class="option-item"><input type="radio" name="q4" value="D"> D. Berbeda kelas tetapi satu ordo</label>
+                    <label class="option-item"><input type="radio" name="q4" value="E"> E. Satu famili tetapi berbeda marga</label>
+                </ul>
+                <div class="discussion-box" id="disc-4">
+                    <div class="discussion-title">Kunci Jawaban: B</div>
+                    <p>Kata pertama (<i>Solanum</i>) menunjukkan Genus/Marga yang sama. Kata kedua (<i>tuberosum</i> & <i>lycopersicum</i>) menunjukkan Spesies/Jenis yang berbeda.</p>
+                </div>
+            </div>
+
+            <!-- Soal 5 -->
+            <div class="question-card" id="q-card-5">
+                <span class="badge">KD 3.4: Peran Bakteri Pengurai</span>
+                <div class="question-text">5. Pada proses pengomposan, bakteri menguraikan bahan organik menjadi zat anorganik. Jika lingkungan kekurangan oksigen, perubahan yang terjadi pada proses tersebut adalah ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q5" value="A"> A. Berhenti total karena bakteri mati</label>
+                    <label class="option-item"><input type="radio" name="q5" value="B"> B. Tetap berlangsung dengan hasil akhir yang sama</label>
+                    <label class="option-item"><input type="radio" name="q5" value="C"> C. Berlangsung lebih lambat dan menghasilkan gas metana</label>
+                    <label class="option-item"><input type="radio" name="q5" value="D"> D. Berlangsung lebih cepat dan menghasilkan karbon dioksida</label>
+                    <label class="option-item"><input type="radio" name="q5" value="E"> E. Berubah menjadi proses pembusukan tanpa pelepasan energi</label>
+                </ul>
+                <div class="discussion-box" id="disc-5">
+                    <div class="discussion-title">Kunci Jawaban: C</div>
+                    <p>Kondisi anaerob (tanpa oksigen) dialihkan ke penguraian anaerobik oleh mikroba anaerob. Proses ini berjalan lebih lambat dan menghasilkan produk sampingan berupa gas metana (CH₄).</p>
+                </div>
+            </div>
+
+            <!-- Soal 6 -->
+            <div class="question-card" id="q-card-6">
+                <span class="badge">KD 3.4: Daur Nitrogen</span>
+                <div class="question-text">6. Seorang petani menggunakan pupuk hijau dan bakteri <i>Rhizobium</i> untuk meningkatkan kesuburan tanah. Mekanisme peningkatan kesuburan tersebut terjadi karena bakteri ini ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q6" value="A"> A. Mengubah amonia menjadi nitrat yang dapat diserap akar</label>
+                    <label class="option-item"><input type="radio" name="q6" value="B"> B. Mengikat nitrogen bebas dari udara menjadi senyawa nitrogen</label>
+                    <label class="option-item"><input type="radio" name="q6" value="C"> C. Menguraikan sisa tanaman menjadi unsur hara</label>
+                    <label class="option-item"><input type="radio" name="q6" value="D"> D. Mengubah nitrat menjadi nitrogen bebas kembali ke udara</label>
+                    <label class="option-item"><input type="radio" name="q6" value="E"> E. Menghasilkan hormon pertumbuhan untuk tanaman</label>
+                </ul>
+                <div class="discussion-box" id="disc-6">
+                    <div class="discussion-title">Kunci Jawaban: B</div>
+                    <p>Bakteri <i>Rhizobium</i> bersimbiosis dengan bintil akar legum untuk melakukan fiksasi nitrogen, mengikat N₂ bebas udara menjadi ammonia/senyawa nitrogen yang menyuburkan tanah.</p>
+                </div>
+            </div>
+
+            <!-- Soal 7 (Dengan SVG Visual) -->
+            <div class="question-card" id="q-card-7">
+                <span class="badge">KD 3.5: Rantai makanan & Ekosistem</span>
+                <div class="question-text">7. Perhatikan jaring makanan ekosistem danau berikut:</div>
+                <div class="svg-container">
+                    <svg width="400" height="100" viewBox="0 0 500 100">
+                        <rect x="10" y="30" width="100" height="40" rx="5" fill="#10B981" />
+                        <text x="60" y="55" fill="white" font-size="12" text-anchor="middle">Fitoplankton</text>
+                        <path d="M 115 50 L 140 50" stroke="#1F2937" stroke-width="2" marker-end="url(#arrow)" />
+                        
+                        <rect x="145" y="30" width="100" height="40" rx="5" fill="#3B82F6" />
+                        <text x="195" y="55" fill="white" font-size="12" text-anchor="middle">Zooplankton</text>
+                        <path d="M 250 50 L 275 50" stroke="#1F2937" stroke-width="2" />
+                        
+                        <rect x="280" y="30" width="90" height="40" rx="5" fill="#F59E0B" />
+                        <text x="325" y="55" fill="white" font-size="12" text-anchor="middle">Ikan Kecil</text>
+                        <path d="M 375 50 L 400 50" stroke="#1F2937" stroke-width="2" />
+
+                        <rect x="405" y="30" width="85" height="40" rx="5" fill="#EF4444" />
+                        <text x="447" y="55" fill="white" font-size="12" text-anchor="middle">Ikan Besar</text>
+                    </svg>
+                </div>
+                <div class="question-text">Jika jumlah ikan besar berkurang drastis karena penangkapan berlebih, dampak jangka panjang yang paling mungkin terjadi adalah ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q7" value="A"> A. Populasi fitoplankton meningkat pesat</label>
+                    <label class="option-item"><input type="radio" name="q7" value="B"> B. Populasi zooplankton menurun drastis</label>
+                    <label class="option-item"><input type="radio" name="q7" value="C"> C. Populasi ikan kecil menurun drastis</label>
+                    <label class="option-item"><input type="radio" name="q7" value="D"> D. Keseimbangan rantai makanan tetap terjaga</label>
+                    <label class="option-item"><input type="radio" name="q7" value="E"> E. Bakteri pengurai tidak lagi berfungsi</label>
+                </ul>
+                <div class="discussion-box" id="disc-7">
+                    <div class="discussion-title">Kunci Jawaban: B</div>
+                    <p>Hilangnya ikan besar mengurangi pemangsa ikan kecil → populasi ikan kecil melonjak pesat → pemangsaan terhadap zooplankton meningkat pesat → populasi zooplankton menurun drastis.</p>
+                </div>
+            </div>
+
+            <!-- Soal 8 (Dengan SVG Piramida Energi) -->
+            <div class="question-card" id="q-card-8">
+                <span class="badge">KD 3.5: Aliran Energi Ekosistem</span>
+                <div class="question-text">8. Pada suatu ekosistem hutan, energi yang tersedia pada tingkat produsen adalah 10.000 kkal. Berdasarkan hukum 10% aliran energi (seperti ilustrasi piramida di bawah):</div>
+                <div class="svg-container">
+                    <svg width="300" height="120" viewBox="0 0 300 120">
+                        <polygon points="120,10 180,10 200,40 100,40" fill="#EF4444" />
+                        <text x="150" y="28" fill="white" font-size="10" text-anchor="middle">Konsumen III (? kkal)</text>
+                        <polygon points="100,42 200,42 220,70 80,70" fill="#F59E0B" />
+                        <text x="150" y="60" fill="white" font-size="10" text-anchor="middle">Konsumen II (100 kkal)</text>
+                        <polygon points="80,72 220,72 240,95 60,95" fill="#3B82F6" />
+                        <text x="150" y="87" fill="white" font-size="10" text-anchor="middle">Konsumen I (1.000 kkal)</text>
+                        <polygon points="60,97 240,97 260,118 40,118" fill="#10B981" />
+                        <text x="150" y="112" fill="white" font-size="10" text-anchor="middle">Produsen (10.000 kkal)</text>
+                    </svg>
+                </div>
+                <div class="question-text">Energi yang tersedia untuk konsumen tingkat III adalah ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q8" value="A"> A. 10.000 kkal</label>
+                    <label class="option-item"><input type="radio" name="q8" value="B"> B. 1.000 kkal</label>
+                    <label class="option-item"><input type="radio" name="q8" value="C"> C. 100 kkal</label>
+                    <label class="option-item"><input type="radio" name="q8" value="D"> D. 10 kkal</label>
+                    <label class="option-item"><input type="radio" name="q8" value="E"> E. 1 kkal</label>
+                </ul>
+                <div class="discussion-box" id="disc-8">
+                    <div class="discussion-title">Kunci Jawaban: D</div>
+                    <p>Hukum Lindeman (10%):<br>
+                    Produsen = 10.000 kkal<br>
+                    Konsumen I = 10% x 10.000 = 1.000 kkal<br>
+                    Konsumen II = 10% x 1.000 = 100 kkal<br>
+                    Konsumen III = 10% x 100 = 10 kkal.</p>
+                </div>
+            </div>
+
+            <!-- Soal 9 -->
+            <div class="question-card" id="q-card-9">
+                <span class="badge">KD 3.6: Transport Membran (Osmosis)</span>
+                <div class="question-text">9. Jika suatu sel hewan ditempatkan dalam larutan yang konsentrasi garamnya lebih tinggi daripada cairan sitoplasma sel (hipertonik), maka peristiwa yang terjadi dan alasannya adalah ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q9" value="A"> A. Sel mengembang karena air masuk ke dalam sel</label>
+                    <label class="option-item"><input type="radio" name="q9" value="B"> B. Sel mengkerut (krenasi) karena air keluar dari sel</label>
+                    <label class="option-item"><input type="radio" name="q9" value="C"> C. Sel tetap utuh karena tidak ada perpindahan zat</label>
+                    <label class="option-item"><input type="radio" name="q9" value="D"> D. Sel pecah karena tekanan air terlalu besar</label>
+                    <label class="option-item"><input type="radio" name="q9" value="E"> E. Dinding sel menebal untuk menahan tekanan luar</label>
+                </ul>
+                <div class="discussion-box" id="disc-9">
+                    <div class="discussion-title">Kunci Jawaban: B</div>
+                    <p>Lingkungan hipertonik menyebabkan air bergerak keluar dari sel menuju larutan luar secara osmosis, sehingga sel hewan mengalami pengerutan (krenasi).</p>
+                </div>
+            </div>
+
+            <!-- Soal 10 -->
+            <div class="question-card" id="q-card-10">
+                <span class="badge">KD 3.6: Enzim & Denaturasi</span>
+                <div class="question-text">10. Enzim amilase bekerja optimal pada suhu 37°C dan pH netral. Jika suhu dinaikkan menjadi 80°C selama 10 menit, kemudian diturunkan kembali ke 37°C, maka aktivitas enzim akan ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q10" value="A"> A. Kembali normal sepenuhnya</label>
+                    <label class="option-item"><input type="radio" name="q10" value="B"> B. Lebih tinggi dari sebelumnya</label>
+                    <label class="option-item"><input type="radio" name="q10" value="C"> C. Tidak dapat kembali normal karena struktur enzim rusak</label>
+                    <label class="option-item"><input type="radio" name="q10" value="D"> D. Tetap sama seperti saat suhu tinggi</label>
+                    <label class="option-item"><input type="radio" name="q10" value="E"> E. Hanya berfungsi pada pH asam saja</label>
+                </ul>
+                <div class="discussion-box" id="disc-10">
+                    <div class="discussion-title">Kunci Jawaban: C</div>
+                    <p>Suhu tinggi (80°C) merusak ikatan hidrogen dan struktur 3D protein enzim (denaturasi permanen), sehingga sisi aktifnya rusak tak terbalikkan meskipun suhu didinginkan kembali.</p>
+                </div>
+            </div>
+
+            <!-- Soal 11 -->
+            <div class="question-card" id="q-card-11">
+                <span class="badge">KD 3.6: Metabolisme Sel</span>
+                <div class="question-text">11. Perbedaan mendasar antara reaksi fotosintesis dan respirasi sel adalah ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q11" value="A"> A. Fotosintesis melepaskan energi, respirasi menyerap energi</label>
+                    <label class="option-item"><input type="radio" name="q11" value="B"> B. Fotosintesis membutuhkan cahaya, respirasi tidak bergantung pada cahaya</label>
+                    <label class="option-item"><input type="radio" name="q11" value="C"> C. Fotosintesis menghasilkan air, respirasi menggunakan air</label>
+                    <label class="option-item"><input type="radio" name="q11" value="D"> D. Fotosintesis terjadi di mitokondria, respirasi di kloroplas</label>
+                    <label class="option-item"><input type="radio" name="q11" value="E"> E. Fotosintesis berlangsung terus-menerus, respirasi hanya malam hari</label>
+                </ul>
+                <div class="discussion-box" id="disc-11">
+                    <div class="discussion-title">Kunci Jawaban: B</div>
+                    <p>Fotosintesis adalah anabolisme fototrof (butuh foton/cahaya), sedangkan respirasi sel adalah katabolisme yang berlangsung terus-menerus tanpa tergantung paparan cahaya.</p>
+                </div>
+            </div>
+
+            <!-- Soal 12 -->
+            <div class="question-card" id="q-card-12">
+                <span class="badge">KD 3.6: Mekanisme Transport Membran</span>
+                <div class="question-text">12. Suatu zat dapat melewati membran sel meskipun melawan gradien konsentrasi. Proses ini membutuhkan energi (ATP) dan protein pembawa. Mekanisme transportasi tersebut adalah ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q12" value="A"> A. Difusi sederhana</label>
+                    <label class="option-item"><input type="radio" name="q12" value="B"> B. Osmosis</label>
+                    <label class="option-item"><input type="radio" name="q12" value="C"> C. Difusi terfasilitasi</label>
+                    <label class="option-item"><input type="radio" name="q12" value="D"> D. Transport aktif</label>
+                    <label class="option-item"><input type="radio" name="q12" value="E"> E. Pinositosis</label>
+                </ul>
+                <div class="discussion-box" id="disc-12">
+                    <div class="discussion-title">Kunci Jawaban: D</div>
+                    <p>Ciri utama Transport Aktif adalah pemindahan solut *melawan* gradien konsentrasi yang memerlukan ATP dan protein pompa/pembawa.</p>
+                </div>
+            </div>
+
+            <!-- Soal 13 -->
+            <div class="question-card" id="q-card-13">
+                <span class="badge">KD 3.7: Sistem Pernapasan</span>
+                <div class="question-text">13. Pada pertukaran gas di paru-paru, oksigen berdifusi masuk ke dalam darah sedangkan karbon dioksida berdifusi keluar menuju alveolus. Hal ini terjadi karena ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q13" value="A"> A. Tekanan parsial oksigen lebih tinggi di udara alveolus daripada di darah</label>
+                    <label class="option-item"><input type="radio" name="q13" value="B"> B. Tekanan parsial oksigen lebih tinggi di darah daripada di alveolus</label>
+                    <label class="option-item"><input type="radio" name="q13" value="C"> C. Tekanan parsial karbon dioksida sama besar di darah dan alveolus</label>
+                    <label class="option-item"><input type="radio" name="q13" value="D"> D. Membran alveolus hanya bisa dilalui oksigen saja</label>
+                    <label class="option-item"><input type="radio" name="q13" value="E"> E. Darah mendorong gas keluar secara paksa</label>
+                </ul>
+                <div class="discussion-box" id="disc-13">
+                    <div class="discussion-title">Kunci Jawaban: A</div>
+                    <p>Difusi gas bergerak dari tekanan parsial tinggi ke rendah. O₂ berdifusi masuk karena PO₂ di alveolus (~104 mmHg) lebih tinggi dibanding PO₂ kapiler darah (~40 mmHg).</p>
+                </div>
+            </div>
+
+            <!-- Soal 14 -->
+            <div class="question-card" id="q-card-14">
+                <span class="badge">KD 3.7: Fisiologi Otot & Respirasi</span>
+                <div class="question-text">14. Seorang atlet berlari cepat selama 10 menit. Setelah itu, ia merasakan otot kakinya terasa pegal. Penyebab dan solusi biologisnya adalah ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q14" value="A"> A. Terjadi penumpukan asam laktat karena kekurangan oksigen; diatasi dengan bernapas teratur</label>
+                    <label class="option-item"><input type="radio" name="q14" value="B"> B. Terjadi penumpukan karbon dioksida; diatasi dengan minum air dingin</label>
+                    <label class="option-item"><input type="radio" name="q14" value="C"> C. Kadar oksigen dalam darah terlalu tinggi; diatasi dengan beristirahat total</label>
+                    <label class="option-item"><input type="radio" name="q14" value="D"> D. Glukosa habis terpakai; diatasi dengan makan banyak gula</label>
+                    <label class="option-item"><input type="radio" name="q14" value="E"> E. Otot mengalami kerusakan permanen; tidak dapat dipulihkan</label>
+                </ul>
+                <div class="discussion-box" id="disc-14">
+                    <div class="discussion-title">Kunci Jawaban: A</div>
+                    <p>Kerja otot intensif cepat memicu fermentasi asam laktat (respirasi anaerob). Pegal hilang setelah oksigen cukup untuk mengoksidasi asam laktat kembali di hati.</p>
+                </div>
+            </div>
+
+            <!-- Soal 15 -->
+            <div class="question-card" id="q-card-15">
+                <span class="badge">KD 3.7: Sistem Ekskresi</span>
+                <div class="question-text">15. Pada ginjal, air dan zat gizi penting yang tersaring di glomerulus sebagian besar dikembalikan ke dalam darah. Bagian yang berperan utama dalam proses reabsorpsi ini adalah ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q15" value="A"> A. Kapsula Bowman</label>
+                    <label class="option-item"><input type="radio" name="q15" value="B"> B. Tubulus kontortus proksimal</label>
+                    <label class="option-item"><input type="radio" name="q15" value="C"> C. Lengkung Henle</label>
+                    <label class="option-item"><input type="radio" name="q15" value="D"> D. Tubulus kontortus distal</label>
+                    <label class="option-item"><input type="radio" name="q15" value="E"> E. Kantung kemih</label>
+                </ul>
+                <div class="discussion-box" id="disc-15">
+                    <div class="discussion-title">Kunci Jawaban: B</div>
+                    <p>Reabsorpsi utama (glukosa, asam amino, ion, dan air) sebagian besar (sekitar 65-80%) terjadi di Tubulus Kontortus Proksimal (TKP).</p>
+                </div>
+            </div>
+
+            <!-- Soal 16 -->
+            <div class="question-card" id="q-card-16">
+                <span class="badge">KD 3.7: Kelainan Sistem Ekskresi</span>
+                <div class="question-text">16. Jika seseorang mengalami kerusakan pada nefron sehingga kemampuan reabsorpsi berkurang, maka gejala yang akan muncul adalah ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q16" value="A"> A. Volume urin berkurang dan pekat</label>
+                    <label class="option-item"><input type="radio" name="q16" value="B"> B. Volume urin bertambah banyak dan encer</label>
+                    <label class="option-item"><input type="radio" name="q16" value="C"> C. Urin tidak mengandung urea lagi</label>
+                    <label class="option-item"><input type="radio" name="q16" value="D"> D. Tekanan darah menurun drastis</label>
+                    <label class="option-item"><input type="radio" name="q16" value="E"> E. Tidak ada perubahan pada urin</label>
+                </ul>
+                <div class="discussion-box" id="disc-16">
+                    <div class="discussion-title">Kunci Jawaban: B</div>
+                    <p>Kegagalan reabsorpsi air menyebabkan air dari filtrat tidak diserap balik ke darah, menghasilkan volume urin melimpah dan sangat encer (seperti pada poliuria/diabetes insipidus).</p>
+                </div>
+            </div>
+
+            <!-- Soal 17 -->
+            <div class="question-card" id="q-card-17">
+                <span class="badge">KD 3.7: Sistem Imun</span>
+                <div class="question-text">17. Seorang anak divaksinasi polio. Mekanisme terbentuknya kekebalan tubuh akibat vaksinasi tersebut adalah ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q17" value="A"> A. Tubuh menerima antibodi langsung sehingga segera terlindungi</label>
+                    <label class="option-item"><input type="radio" name="q17" value="B"> B. Tubuh membentuk antibodi dan sel memori setelah terpapar antigen yang dilemahkan</label>
+                    <label class="option-item"><input type="radio" name="q17" value="C"> C. Vaksin membunuh semua virus yang masuk ke tubuh secara permanen</label>
+                    <label class="option-item"><input type="radio" name="q17" value="D"> D. Sel darah putih langsung bertambah jumlahnya tanpa rangsangan</label>
+                    <label class="option-item"><input type="radio" name="q17" value="E"> E. Kekebalan hanya bertahan beberapa hari saja</label>
+                </ul>
+                <div class="discussion-box" id="disc-17">
+                    <div class="discussion-title">Kunci Jawaban: B</div>
+                    <p>Vaksinasi memicu imunitas aktif buatan: antigen yang dilemahkan merangsang limfosit membentuk antibodi spesifik dan sel memori untuk perlindungan jangka panjang.</p>
+                </div>
+            </div>
+
+            <!-- Soal 18 -->
+            <div class="question-card" id="q-card-18">
+                <span class="badge">KD 3.7: Sel Imunologik</span>
+                <div class="question-text">18. Jika sel limfosit B tidak berfungsi dengan baik, maka dampak yang paling terasa bagi tubuh adalah ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q18" value="A"> A. Tidak dapat mengatur keseimbangan cairan</label>
+                    <label class="option-item"><input type="radio" name="q18" value="B"> B. Kemampuan membentuk antibodi menurun drastis</label>
+                    <label class="option-item"><input type="radio" name="q18" value="C"> C. Pertahanan tubuh hanya mengandalkan sel T saja</label>
+                    <label class="option-item"><input type="radio" name="q18" value="D"> D. Proses pembekuan darah terganggu</label>
+                    <label class="option-item"><input type="radio" name="q18" value="E"> E. Tidak dapat merespons rangsangan cahaya</label>
+                </ul>
+                <div class="discussion-box" id="disc-18">
+                    <div class="discussion-title">Kunci Jawaban: B</div>
+                    <p>Limfosit B bertanggung jawab pada respon imun humoral melalui diferensiasi menjadi sel plasma penghasil antibodi.</p>
+                </div>
+            </div>
+
+            <!-- Soal 19 -->
+            <div class="question-card" id="q-card-19">
+                <span class="badge">KD 3.7: Sistem Saraf & Refleks</span>
+                <div class="question-text">19. Seorang siswa secara tidak sengaja menyentuh panci panas dan secara refleks menarik tangannya. Jalur kerja gerak refleks tersebut adalah ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q19" value="A"> A. Reseptor → Saraf penghubung → Saraf sensorik → Saraf motorik → Efektor</label>
+                    <label class="option-item"><input type="radio" name="q19" value="B"> B. Reseptor → Saraf sensorik → Pusat saraf (Sumsum TB) → Saraf motorik → Efektor</label>
+                    <label class="option-item"><input type="radio" name="q19" value="C"> C. Reseptor → Saraf motorik → Otak → Saraf sensorik → Efektor</label>
+                    <label class="option-item"><input type="radio" name="q19" value="D"> D. Efektor → Saraf sensorik → Sumsum tulang belakang → Saraf motorik</label>
+                    <label class="option-item"><input type="radio" name="q19" value="E"> E. Reseptor → Otak → Saraf penghubung → Efektor</label>
+                </ul>
+                <div class="discussion-box" id="disc-19">
+                    <div class="discussion-title">Kunci Jawaban: B</div>
+                    <p>Lengkung refleks: Reseptor (kulit) → Neuron Sensorik → Interneuron/Pusat Saraf (Sumsum Tulang Belakang) → Neuron Motorik → Efektor (Otot tangan).</p>
+                </div>
+            </div>
+
+            <!-- Soal 20 -->
+            <div class="question-card" id="q-card-20">
+                <span class="badge">KD 3.7: Regulasi Hormonal</span>
+                <div class="question-text">20. Kadar gula darah seseorang meningkat setelah makan, kemudian turun kembali ke batas normal. Hormon yang berperan menurunkan kadar gula darah tersebut adalah ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q20" value="A"> A. Glukagon</label>
+                    <label class="option-item"><input type="radio" name="q20" value="B"> B. Insulin</label>
+                    <label class="option-item"><input type="radio" name="q20" value="C"> C. Adrenalin</label>
+                    <label class="option-item"><input type="radio" name="q20" value="D"> D. Tiroksin</label>
+                    <label class="option-item"><input type="radio" name="q20" value="E"> E. Kortisol</label>
+                </ul>
+                <div class="discussion-box" id="disc-20">
+                    <div class="discussion-title">Kunci Jawaban: B</div>
+                    <p>Hormon Insulin diproduksi sel beta pankreas untuk memicu sel tubuh mengambil glukosa dan merangsang pembentukan glikogen di hati.</p>
+                </div>
+            </div>
+
+            <!-- Soal 21 -->
+            <div class="question-card" id="q-card-21">
+                <span class="badge">KD 3.7: Endokrinologi</span>
+                <div class="question-text">21. Jika kelenjar hipofisis anterior mengalami gangguan sehingga tidak dapat menghasilkan TSH (Thyroid Stimulating Hormone), maka dampak yang terjadi adalah ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q21" value="A"> A. Kelenjar tiroid membesar dan menghasilkan hormon berlebih</label>
+                    <label class="option-item"><input type="radio" name="q21" value="B"> B. Kelenjar tiroid mengecil dan produksi tiroksin menurun</label>
+                    <label class="option-item"><input type="radio" name="q21" value="C"> C. Metabolisme tubuh meningkat sangat cepat</label>
+                    <label class="option-item"><input type="radio" name="q21" value="D"> D. Kadar kalsium darah meningkat drastis</label>
+                    <label class="option-item"><input type="radio" name="q21" value="E"> E. Tidak ada perubahan pada fungsi tubuh</label>
+                </ul>
+                <div class="discussion-box" id="disc-21">
+                    <div class="discussion-title">Kunci Jawaban: B</div>
+                    <p>TSH berfungsi merangsang kelenjar tiroid. Tanpa TSH, rangsangan tiroid hilang sehingga produksi tiroksin anjlok dan kelenjar mengalami atrofi (mengecil).</p>
+                </div>
+            </div>
+
+            <!-- Soal 22 -->
+            <div class="question-card" id="q-card-22">
+                <span class="badge">KD 3.8: Sistem Reproduksi Manusia</span>
+                <div class="question-text">22. Pada siklus menstruasi wanita, penurunan drastis kadar hormon progesteron di akhir siklus menyebabkan ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q22" value="A"> A. Pematangan sel telur</label>
+                    <label class="option-item"><input type="radio" name="q22" value="B"> B. Ovulasi terjadi</label>
+                    <label class="option-item"><input type="radio" name="q22" value="C"> C. Peluruhan dinding rahim (menstruasi)</label>
+                    <label class="option-item"><input type="radio" name="q22" value="D"> D. Pelepasan sel telur ke tuba falopi</label>
+                    <label class="option-item"><input type="radio" name="q22" value="E"> E. Pembentukan korpus luteum</label>
+                </ul>
+                <div class="discussion-box" id="disc-22">
+                    <div class="discussion-title">Kunci Jawaban: C</div>
+                    <p>Progesteron berfungsi merawat ketebalan lapisan endometrium. Penurunan progesteron meruntuhkan lapisan pembuluh darah tersebut (fase menstruasi).</p>
+                </div>
+            </div>
+
+            <!-- Soal 23 -->
+            <div class="question-card" id="q-card-23">
+                <span class="badge">KD 3.8: Gangguan Reproduksi</span>
+                <div class="question-text">23. Seorang pasien mengalami penyumbatan permanen pada kedua saluran tuba falopi. Akibatnya, pasien tersebut mengalami infertilitas karena ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q23" value="A"> A. Sel telur tidak dapat diproduksi</label>
+                    <label class="option-item"><input type="radio" name="q23" value="B"> B. Tempat terjadinya pembuahan (fertilisasi) terhalang</label>
+                    <label class="option-item"><input type="radio" name="q23" value="C"> C. Rahim tidak dapat menampung janin</label>
+                    <label class="option-item"><input type="radio" name="q23" value="D"> D. Hormon reproduksi tidak dihasilkan</label>
+                    <label class="option-item"><input type="radio" name="q23" value="E"> E. Sperma tidak dapat diproduksi</label>
+                </ul>
+                <div class="discussion-box" id="disc-23">
+                    <div class="discussion-title">Kunci Jawaban: B</div>
+                    <p>Tuba falopi (saluran telur) merupakan lokasi normal tempat terjadinya pembuahan/fertilisasi antara sperma dan sel telur.</p>
+                </div>
+            </div>
+
+            <!-- Soal 24 -->
+            <div class="question-card" id="q-card-24">
+                <span class="badge">KD 3.8: Pembelahan Sel</span>
+                <div class="question-text">24. Perbedaan mendasar antara pembelahan mitosis dan meiosis yang menentukan fungsi biologi masing-masing adalah ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q24" value="A"> A. Mitosis menghasilkan sel haploid, meiosis menghasilkan sel diploid</label>
+                    <label class="option-item"><input type="radio" name="q24" value="B"> B. Mitosis terjadi pada sel tubuh untuk pertumbuhan, meiosis pada sel kelamin untuk pembiakan</label>
+                    <label class="option-item"><input type="radio" name="q24" value="C"> C. Mitosis terjadi dua kali pembelahan, meiosis hanya satu kali</label>
+                    <label class="option-item"><input type="radio" name="q24" value="D"> D. Mitosis menghasilkan variasi genetik, meiosis identik dengan induk</label>
+                    <label class="option-item"><input type="radio" name="q24" value="E"> E. Mitosis membutuhkan energi, meiosis tidak membutuhkan energi</label>
+                </ul>
+                <div class="discussion-box" id="disc-24">
+                    <div class="discussion-title">Kunci Jawaban: B</div>
+                    <p>Mitosis mempertahankan jumlah kromosom (diploid) pada sel somatis/tubuh. Meiosis mereduksi separuh kromosom (haploid) pada gamet untuk menjaga konstansi kromosom generasi.</p>
+                </div>
+            </div>
+
+            <!-- Soal 25 -->
+            <div class="question-card" id="q-card-25">
+                <span class="badge">KD 3.8: Mutasi & Meiosis</span>
+                <div class="question-text">25. Jika terjadi peristiwa <i>nondisjunction</i> (gagal berpisah) kromosom saat meiosis, maka akibat yang paling mungkin terjadi adalah ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q25" value="A"> A. Semua sel tetap normal</label>
+                    <label class="option-item"><input type="radio" name="q25" value="B"> B. Terjadi kelainan jumlah kromosom pada sel anak (aneuploidi)</label>
+                    <label class="option-item"><input type="radio" name="q25" value="C"> C. Pembelahan sel berhenti fully</label>
+                    <label class="option-item"><input type="radio" name="q25" value="D"> D. Sel menjadi lebih besar dari biasanya</label>
+                    <label class="option-item"><input type="radio" name="q25" value="E"> E. Tidak ada perubahan pada sifat keturunan</label>
+                </ul>
+                <div class="discussion-box" id="disc-25">
+                    <div class="discussion-title">Kunci Jawaban: B</div>
+                    <p>Gagal berpisah menyebabkan pasangan kromosom tidak terbagi rata ke sel anak, menghasilkan gamet n+1 atau n-1 (penyebab Sindrom Down, Klinefelter, dll).</p>
+                </div>
+            </div>
+
+            <!-- Soal 26 -->
+            <div class="question-card" id="q-card-26">
+                <span class="badge">KD 3.8: Perkembangan Janin</span>
+                <div class="question-text">26. Plasenta berperan sangat penting selama kehamilan karena memiliki fungsi utama sebagai ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q26" value="A"> A. Tempat pembentukan sel darah janin</label>
+                    <label class="option-item"><input type="radio" name="q26" value="B"> B. Alat pertukaran zat nutrisi, O2, dan sisa metabolisme antara ibu dan janin</label>
+                    <label class="option-item"><input type="radio" name="q26" value="C"> C. Penghasil hormon pertumbuhan janin</label>
+                    <label class="option-item"><input type="radio" name="q26" value="D"> D. Pelindung janin dari benturan fisik utama</label>
+                    <label class="option-item"><input type="radio" name="q26" value="E"> E. Tempat penyimpanan cadangan makanan janin</label>
+                </ul>
+                <div class="discussion-box" id="disc-26">
+                    <div class="discussion-title">Kunci Jawaban: B</div>
+                    <p>Plasenta menghubungkan sirkulasi maternal dan fetal untuk pertukaran gas O₂/CO₂, suplai nutrisi, dan pembuangan ekskresi janin.</p>
+                </div>
+            </div>
+
+            <!-- Soal 27 -->
+            <div class="question-card" id="q-card-27">
+                <span class="badge">KD 3.8: Reproduksi Tumbuhan</span>
+                <div class="question-text">27. Pada reproduksi tumbuhan berbunga (Angiospermae), urutan kejadian yang benar setelah terjadinya penyerbukan adalah ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q27" value="A"> A. Pematangan biji → Pembuahan → Pembuahan serbuk sari</label>
+                    <label class="option-item"><input type="radio" name="q27" value="B"> B. Tumbuhnya tabung serbuk sari → Pembuahan → Pembentukan biji dan buah</label>
+                    <label class="option-item"><input type="radio" name="q27" value="C"> C. Pembuahan → Penyerbukan → Pembentukan bunga baru</label>
+                    <label class="option-item"><input type="radio" name="q27" value="D"> D. Pembentukan buah → Pembuahan → Jatuhnya mahkota bunga</label>
+                    <label class="option-item"><input type="radio" name="q27" value="E"> E. Tabung serbuk sari menuju bakal biji → Penyerbukan → Pembuahan</label>
+                </ul>
+                <div class="discussion-box" id="disc-27">
+                    <div class="discussion-title">Kunci Jawaban: B</div>
+                    <p>Penyerbukan → berkecambah membentuk tabung serbuk sari menuju ovulum → fertilisasi ganda → bakal biji jadi biji & bakal buah jadi buah.</p>
+                </div>
+            </div>
+
+            <!-- Soal 28 -->
+            <div class="question-card" id="q-card-28">
+                <span class="badge">KD 3.8: Pemuliaan Tumbuhan</span>
+                <div class="question-text">28. Suatu varietas tanaman diinginkan memiliki kombinasi sifat unggul gabungan dari dua induk yang berbeda. Teknik reproduksi yang paling tepat adalah ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q28" value="A"> A. Stek batang</label>
+                    <label class="option-item"><input type="radio" name="q28" value="B"> B. Okulasi</label>
+                    <label class="option-item"><input type="radio" name="q28" value="C"> C. Penyerbukan silang</label>
+                    <label class="option-item"><input type="radio" name="q28" value="D"> D. Pembelahan tunas</label>
+                    <label class="option-item"><input type="radio" name="q28" value="E"> E. Kultur jaringan</label>
+                </ul>
+                <div class="discussion-box" id="disc-28">
+                    <div class="discussion-title">Kunci Jawaban: C</div>
+                    <p>Penyerbukan silang menggabungkan rekombinasi genetik dari dua tetua berbeda sifat melalui rekombinasi meiotik generatif.</p>
+                </div>
+            </div>
+
+            <!-- Soal 29 -->
+            <div class="question-card" id="q-card-29">
+                <span class="badge">KD 3.8: Genetika Sel Gamet</span>
+                <div class="question-text">29. Mengapa sel kelamin (gamet) harus memiliki jumlah kromosom separuh (n) dari sel tubuh induknya (2n)?</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q29" value="A"> A. Agar pembuahan menghasilkan keturunan dengan jumlah kromosom tetap sama dengan induk</label>
+                    <label class="option-item"><input type="radio" name="q29" value="B"> B. Agar sel kelamin lebih ringan dan mudah bergerak</label>
+                    <label class="option-item"><input type="radio" name="q29" value="C"> C. Agar proses pembelahan berlangsung lebih cepat</label>
+                    <label class="option-item"><input type="radio" name="q29" value="D"> D. Agar variasi genetik menjadi lebih sedikit</label>
+                    <label class="option-item"><input type="radio" name="q29" value="E"> E. Agar sel kelamin dapat bertahan hidup lebih lama</label>
+                </ul>
+                <div class="discussion-box" id="disc-29">
+                    <div class="discussion-title">Kunci Jawaban: A</div>
+                    <p>Peleburan sperma (n) + ovum (n) saat fertilisasi menghasilkan zigot (2n), menjaga kestabilan ploidi spesies dari generasi ke generasi.</p>
+                </div>
+            </div>
+
+            <!-- Soal 30 -->
+            <div class="question-card" id="q-card-30">
+                <span class="badge">KD 3.8: Kontrasepsi Hormonal</span>
+                <div class="question-text">30. Penggunaan kontrasepsi hormonal bekerja dengan cara menghambat ovulasi. Hal ini terjadi karena hormon sintetis tersebut ...</div>
+                <ul class="options-list">
+                    <label class="option-item"><input type="radio" name="q30" value="A"> A. Langsung membunuh sel telur sebelum matang</label>
+                    <label class="option-item"><input type="radio" name="q30" value="B"> B. Menekan produksi FSH dan LH dari kelenjar hipofisis</label>
+                    <label class="option-item"><input type="radio" name="q30" value="C"> C. Menyebabkan dinding rahim menjadi terlalu tebal</label>
+                    <label class="option-item"><input type="radio" name="q30" value="D"> D. Menghalangi jalur sperma menuju sel telur</label>
+                    <label class="option-item"><input type="radio" name="q30" value="E"> E. Mengubah struktur sel telur sehingga tidak dapat dibuahi</label>
+                </ul>
+                <div class="discussion-box" id="disc-30">
+                    <div class="discussion-title">Kunci Jawaban: B</div>
+                    <p>Hormon progesteron/estrogen sintetis memberikan umpan balik negatif ke hipofisis anterior untuk menghentikan sekresi FSH (pematangan folikel) dan LH (pencetus ovulasi).</p>
+                </div>
+            </div>
+
+            <button type="button" class="btn-submit" id="btn-finish" onclick="checkAnswers()">Selesai & Periksa Jawaban</button>
+        </form>
+    </div>
+
+    <script>
+        const keyAnswers = {
+            q1: "B", q2: "A", q3: "B", q4: "B", q5: "C",
+            q6: "B", q7: "B", q8: "D", q9: "B", q10: "C",
+            q11: "B", q12: "D", q13: "A", q14: "A", q15: "B",
+            q16: "B", q17: "B", q18: "B", q19: "B", q20: "B",
+            q21: "B", q22: "C", q23: "B", q24: "B", q25: "B",
+            q26: "B", q27: "B", q28: "C", q29: "A", q30: "B"
+        };
+
+        let totalSeconds = 60 * 60; 
+        const timerElement = document.getElementById('timer');
+
+        const timerInterval = setInterval(() => {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            
+            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            if (totalSeconds <= 0) {
+                clearInterval(timerInterval);
+                alert("Waktu ujian telah habis!");
+                checkAnswers();
+            } else {
+                totalSeconds--;
+            }
+        }, 1000);
+
+        function checkAnswers() {
+            clearInterval(timerInterval);
+            let score = 0;
+            const totalQuestions = 30;
+
+            for (let i = 1; i <= totalQuestions; i++) {
+                const qName = 'q' + i;
+                const selected = document.querySelector(`input[name="${qName}"]:checked`);
+                const qCard = document.getElementById(`q-card-${i}`);
+                const discBox = document.getElementById(`disc-${i}`);
+
+                if (selected && selected.value === keyAnswers[qName]) {
+                    score++;
+                    qCard.style.backgroundColor = 'var(--correct-bg)';
+                } else {
+                    qCard.style.backgroundColor = 'var(--incorrect-bg)';
+                }
+
+                discBox.classList.add('show');
+            }
+
+            const finalScore = Math.round((score / totalQuestions) * 100);
+            const dashboard = document.getElementById('dashboard');
+            const scoreDisplay = document.getElementById('score-display');
+            const feedbackMessage = document.getElementById('feedback-message');
+
+            scoreDisplay.textContent = finalScore;
+            
+            if(finalScore >= 85) {
+                feedbackMessage.textContent = "Sangat Baik! Pemahaman konsep Biologi Anda sangat kuat.";
+            } else if(finalScore >= 70) {
+                feedbackMessage.textContent = "Baik! Anda telah menguasai sebagian besar materi.";
+            } else {
+                feedbackMessage.textContent = "Perlu Latihan Lagi! Silakan pelajari kembali pembahasan di bawah ini.";
+            }
+
+            dashboard.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => input.disabled = true);
+            document.getElementById('btn-finish').disabled = true;
+        }
+    </script>
+</body>
+</html>
